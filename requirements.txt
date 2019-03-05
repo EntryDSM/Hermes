@@ -1,0 +1,3 @@
+aiomysql==0.0.20
+aiohttp==3.5.4
+hvac==0.7.2
