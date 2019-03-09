@@ -20,7 +20,11 @@ class BaseModel:
     @classmethod
     async def create_table_index(cls):
         for index_name, index_key in cls.indexes.items():
-            await MySQLConnection.execute(f"CREATE INDEX {index_name} ON {cls.table_name} ({', '.join(str(i) for i in index_key)})")
+            try:
+                await MySQLConnection.execute(f"CREATE INDEX {index_name} ON {cls.table_name} ({', '.join(str(i) for i in index_key)})")
+            except Exception as e:
+                if e.args[0] == 1061:
+                    pass
 
     async def save(self):
         pass
@@ -53,7 +57,7 @@ class Admin(BaseModel):
     admin_email = Email(allow_none=False)
     admin_name = String(length=13, allow_none=False)
     created_at = TimeStamp(default=datetime.datetime.now, allow_none=False)
-    updated_at = TimeStamp(default=created_at, allow_none=False)
+    updated_at = TimeStamp(default=datetime.datetime.now, allow_none=False)
 
     def __init__(self, admin_name, admin_email, admin_password, admin_type, admin_id=None, created_at=None, updated_at=None):
         self.admin_name = admin_name
@@ -248,7 +252,7 @@ class ApplicantStatus(BaseModel):
     indexes = {}
 
     table_creation_statement = f"""
-    create table {table_name}
+    create table if not exists {table_name}
     (
       applicant_email                varchar(320)                        not null
         primary key,
