@@ -114,3 +114,132 @@ class Admin(BaseModel):
         return result["admin_type"] if result else None
 
 
+class Applicant(BaseModel):
+    table_name = "applicant"
+    indexes = {}
+
+    table_creation_statement = f"""
+    create table if not exists {table_name}
+    (
+      email          varchar(320)                        not null
+        primary key,
+      password       varchar(320)                        not null,
+      applicant_name varchar(13)                         null,
+      sex            enum ('MALE', 'FEMALE')             null,
+      birth_date     date                                null,
+      parent_name    varchar(13)                         null,
+      parent_tel     varchar(12)                         null,
+      applicant_tel  varchar(12)                         null,
+      address        varchar(500)                        null,
+      post_code      varchar(5)                          null,
+      image_path     varchar(256)                        null,
+      created_at     timestamp default CURRENT_TIMESTAMP not null,
+      updated_at     timestamp default CURRENT_TIMESTAMP not null,
+      constraint applicant_tel_UNIQUE
+        unique (applicant_tel),
+      constraint image_path_UNIQUE
+        unique (image_path)
+    );
+    """
+
+    email = Email(allow_none=False)
+    password = String(length=320, allow_none=False)
+    applicant_name = String(length=13)
+    sex = SexEnum()
+    birth_date = Date()
+    parent_name = String(length=13)
+    parent_tel = PhoneNumber()
+    applicant_tel = PhoneNumber()
+    address = String(length=500)
+    post_code = String(length=5)
+    image_path = String(length=256)
+    created_at = TimeStamp(default=datetime.datetime.now, allow_none=False)
+    updated_at = TimeStamp(default=datetime.datetime.now, allow_none=False)
+
+    def __init__(self, email, password, applicant_name=None, sex=None, birth_date=None, parent_name=None,
+                 parent_tel=None, applicant_tel=None, address=None, post_code=None, image_path=None,
+                 created_at=None, updated_at=None):
+        self.email = email
+        self.password = password
+        self.applicant_name = applicant_name
+        self.sex = sex
+        self.birth_date = birth_date
+        self.parent_name = parent_name
+        self.parent_tel = parent_tel
+        self.applicant_tel = applicant_tel
+        self.address = address,
+        self.post_code = post_code,
+        self.image_path = image_path,
+
+        if created_at and updated_at:
+            self.created_at = created_at
+            self.updated_at = updated_at
+
+    async def save(self):
+        query = f"""
+        INSERT INTO {self.table_name} (
+            email,
+            password,
+            applicant_name,
+            sex,
+            birth_date,
+            parent_name,
+            parent_tel,
+            applicant_tel,
+            address,
+            post_code,
+            image_path,
+            created_at,
+            updated_at,
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+
+        await MySQLConnection.execute(query, self.email, generate_password_hash(self.password), self.applicant_name,
+                                      self.sex, self.birth_date, self.parent_name, self.parent_tel, self.applicant_tel,
+                                      self.address, self.post_code, self.image_path, self.created_at, self.updated_at)
+
+    async def update_info(self):
+        query = f"""UPDATE {self.table_name} 
+            SET applicant_name = %s,
+                sex = %s,
+                birth_date = %s,
+                parent_name = %s,
+                parent_tel = %s,
+                applicant_tel = %s,
+                address = %s,
+                post_code = %,
+                image_path = %s,
+                updated_at = %s
+              WHERE email = %s
+                """
+        await MySQLConnection.execute(query, self.applicant_name, self.sex, self.birth_date, self.parent_name,
+                                      self.parent_tel, self.applicant_tel, self.address, self.post_code,
+                                      self.image_path, datetime.datetime.now(), self.email)
+
+    async def change_password(self, new_password: str):
+        query = f"UPDATE {self.table_name} SET password = %s, updated_at = %s WHERE email = %s"
+        await MySQLConnection.execute(query, generate_password_hash(new_password), datetime.datetime.now(), self.email)
+
+    @classmethod
+    async def query_by_email(cls, email: str) -> "Applicant":
+        query = """
+        SELECT *
+        FROM {cls.table_name}
+        WHERE email = %s
+        """
+
+        result = await MySQLConnection.fetchone(query, email)
+        return Applicant(**result) if result else None
+
+    @classmethod
+    async def query_by_name(cls, name: str) -> Iterable["Applicant"]:
+        query = """
+        SELECT *
+        FROM {cls.table_name}
+        WHERE applicant_name = %s
+        """
+
+        result = await MySQLConnection.fetch(query, name)
+        return [Applicant(**r) for r in result] if result else []
+
+
