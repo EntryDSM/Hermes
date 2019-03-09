@@ -243,3 +243,77 @@ class Applicant(BaseModel):
         return [Applicant(**r) for r in result] if result else []
 
 
+class ApplicantStatus(BaseModel):
+    table_name = "applicant_status"
+    indexes = {}
+
+    table_creation_statement = f"""
+    create table {table_name}
+    (
+      applicant_email                varchar(320)                        not null
+        primary key,
+      receipt_code                   int(3) unsigned zerofill auto_increment,
+      is_paid                        tinyint   default 0                 not null,
+      is_printed_application_arrived tinyint   default 0                 not null,
+      is_passed_first_apply          tinyint   default 0                 not null,
+      is_final_submit                tinyint   default 0                 not null,
+      exam_code                      varchar(6)                          null,
+      created_at                     timestamp default CURRENT_TIMESTAMP not null,
+      updated_at                     timestamp default CURRENT_TIMESTAMP not null,
+      constraint exam_code_UNIQUE
+        unique (exam_code),
+      constraint receipt_code_UNIQUE
+        unique (receipt_code),
+      constraint fk_applicant_status_applicant
+        foreign key (applicant_email) references applicant (email)
+          on update cascade on delete cascade
+    );
+    """
+
+    applicant_email = Email(allow_none=False)
+    receipt_code = Integer()
+    is_paid = Bool(default=False, allow_none=False)
+    is_printed_application_arrived = Bool(default=False, allow_none=False)
+    is_passed_first_apply = Bool(default=False, allow_none=False)
+    is_final_submit = Bool(default=False, allow_none=False)
+    exam_code = String(length=6)
+    created_at = TimeStamp(default=datetime.datetime.now, allow_none=False)
+    updated_at = TimeStamp(default=datetime.datetime.now, allow_none=False)
+
+    def __init__(self, applicant_email, receipt_code=None, is_paid=None, is_printed_application_arrived=None,
+                 is_passed_first_apply=None, is_final_submit=None, exam_code=None, created_at=None, updated_at=None):
+        self.applicant_email = applicant_email
+        self.receipt_code = receipt_code
+        self.is_paid = is_paid
+        self.is_printed_application_arrived = is_printed_application_arrived
+        self.is_passed_first_apply = is_passed_first_apply
+        self.is_final_submit = is_final_submit
+        self.exam_code = exam_code
+
+        if created_at and updated_at:
+            self.created_at = created_at
+            self.updated_at = updated_at
+
+    async def save(self):
+        query = f"INSERT INTO {self.table_name} (applicant_email) VALUES (%s)"
+        await MySQLConnection.execute(query, self.applicant_email)
+
+    async def update_paid_status(self, paid: bool):
+        query = f"UPDATE {self.table_name} SET is_paid = %s, updated_at = %s WHERE applicant_email = %s"
+        await MySQLConnection.execute(query, paid, datetime.datetime.now(), self.applicant_email)
+
+    async def update_document_arrive_status(self, arrived: bool):
+        query = f"UPDATE {self.table_name} SET is_printed_application_arrived = %s, updated_at = %s WHERE applicant_email = %s"
+        await MySQLConnection.execute(query, arrived, datetime.datetime.now(), self.applicant_email)
+
+    async def update_apply_result_status(self, passed: bool):
+        query = f"UPDATE {self.table_name} SET is_passed_first_apply = %s, updated_at = %s WHERE applicant_email = %s"
+        await MySQLConnection.execute(query, passed, datetime.datetime.now(), self.applicant_email)
+
+    async def update_final_submit_status(self, submitted: bool):
+        query = f"UPDATE {self.table_name} SET is_final_submit = %s, updated_at = %s WHERE applicant_email = %s"
+        await MySQLConnection.execute(query, submitted, datetime.datetime.now(), self.applicant_email)
+
+    async def set_exam_code(self, exam_code: str):
+        query = f"UPDATE {self.table_name} SET exam_code = %s, updated_at = %s WHERE applicant_email = %s"
+        await MySQLConnection.execute(query, exam_code, datetime.datetime.now(), self.applicant_email)
