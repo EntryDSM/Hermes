@@ -2,15 +2,17 @@ import os
 import aiomysql
 from typing import List, Dict, Any
 
+from user.config import settings
+
 
 READ_CONNECTION_INFO = {
     'use_unicode': True,
     'charset': 'utf8mb4',
-    'user': os.environ.get('READ_MYSQL_USER'),
-    'password': os.environ.get('READ_MYSQL_PASSWORD'),
-    'db': os.environ.get('READ_MYSQL_DATABASE'),
-    'host': os.environ.get('READ_MYSQL_HOST'),
-    'port': os.environ.get('READ_MYSQL_PORT'),
+    'user': settings.get_database_cred()[0],
+    'password': settings.get_database_cred()[1],
+    'db': settings.READ_MYSQL_DATABASE,
+    'host': settings.READ_MYSQL_HOST,
+    'port': settings.READ_MYSQL_PORT,
     'loop': None,
     'autocommit': True
 }
@@ -18,11 +20,11 @@ READ_CONNECTION_INFO = {
 WRITE_CONNECTION_INFO = {
     'use_unicode': True,
     'charset': 'utf8mb4',
-    'user': os.environ.get('WRITE_MYSQL_USER'),
-    'password': os.environ.get('WRITE_MYSQL_PASSWORD'),
-    'db': os.environ.get('WRITE_MYSQL_DATABASE'),
-    'host': os.environ.get('WRITE_MYSQL_HOST'),
-    'port': os.environ.get('WRITE_MYSQL_PORT'),
+    'user': settings.get_database_cred()[0],
+    'password': settings.get_database_cred()[1],
+    'db': settings.WRITE_MYSQL_DATABASE,
+    'host': settings.WRITE_MYSQL_HOST,
+    'port': settings.WRITE_MYSQL_PORT,
     'loop': None,
     'autocommit': True
 }
