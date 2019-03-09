@@ -141,10 +141,11 @@ class Bool(Type):
 class TimeStamp(Type):
     def __init__(self, default=None, allow_none=True):
         if default:
-            if not isinstance(default, datetime.datetime):
-                raise ValueError(f"datetime was expected for default but {type(default)} was given")
             if callable(default):
                 default = default()
+            if not isinstance(default, datetime.datetime):
+                raise ValueError(f"datetime was expected for default but {type(default)} was given")
+
         super(TimeStamp, self).__init__(default, allow_none)
 
     def __set__(self, instance, value):
