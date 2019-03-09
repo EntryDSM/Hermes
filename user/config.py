@@ -11,6 +11,7 @@ class Settings:
         self.client = vault_client
         self.service = service_name
         self.environ = environ_name
+        self.database_cred = None
 
     def __getattr__(self, item):
         try:
@@ -25,8 +26,9 @@ class Settings:
 
     def get_database_cred(self):
         try:
-            database_cred = self.client.read(f"database/creds/entry-{self.environ}")
-            password, username = database_cred
+            if not self.database_cred:
+                self.database_cred = self.client.read(f"database/creds/entry-{self.environ}")["data"].values()
+            password, username = self.database_cred
         except Exception as e:
             raise e
 
