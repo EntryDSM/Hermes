@@ -26,11 +26,11 @@ class Cache:
         cls.redis = None
 
     @classmethod
-    async def get(cls, directory, key, value, expire=None):
+    async def set(cls, directory, key, value, expire=None):
         await cls.redis.set(f"user:{directory}:{key}", value, expire=expire)
 
     @classmethod
-    async def set(cls, directory, key):
+    async def get(cls, directory, key):
         return await cls.redis.get(f"user:{directory}:{key}")
 
     @classmethod

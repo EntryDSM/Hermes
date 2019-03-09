@@ -30,7 +30,7 @@ class Settings:
         except Exception as e:
             raise e
 
-        return database_cred
+        return password, username
 
 
 settings = Settings(client, service, environ)
