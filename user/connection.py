@@ -8,8 +8,8 @@ from user.config import settings
 READ_CONNECTION_INFO = {
     'use_unicode': True,
     'charset': 'utf8mb4',
-    'user': settings.get_database_cred()[0],
-    'password': settings.get_database_cred()[1],
+    'user': settings.get_database_cred()[1],
+    'password': settings.get_database_cred()[0],
     'db': settings.READ_MYSQL_DATABASE,
     'host': settings.READ_MYSQL_HOST,
     'port': settings.READ_MYSQL_PORT,
@@ -20,8 +20,8 @@ READ_CONNECTION_INFO = {
 WRITE_CONNECTION_INFO = {
     'use_unicode': True,
     'charset': 'utf8mb4',
-    'user': settings.get_database_cred()[0],
-    'password': settings.get_database_cred()[1],
+    'user': settings.get_database_cred()[1],
+    'password': settings.get_database_cred()[0],
     'db': settings.WRITE_MYSQL_DATABASE,
     'host': settings.WRITE_MYSQL_HOST,
     'port': settings.WRITE_MYSQL_PORT,
