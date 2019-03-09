@@ -245,13 +245,7 @@ class PhoneNumber(Type):
         super(PhoneNumber, self).__set__(instance, value)
 
 
-class AdminEnum(Enum):
-    def __init__(self):
-        keys = ('ROOT', 'ADMIN', 'INTERVIEW')
-        super(AdminEnum, self).__init__(keys)
+AdminEnum = type('AdminEnum', (Enum,), {'keys': ('ROOT', 'ADMIN', 'INTERVIEW')})
 
 
-class SexEnum(Enum):
-    def __init__(self):
-        keys = ('MALE', 'FEMALE')
-        super(SexEnum, self).__init__(keys)
+SexEnum = type('SexEnum', (Enum,), {'keys': ('MALE', 'FEMALE')})
