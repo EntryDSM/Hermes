@@ -2,27 +2,56 @@ from sanic.views import HTTPMethodView
 from sanic.response import json
 
 
-class Status(HTTPMethodView):
-    manager = StatusManager()
-
-    async def get(self, request):
-        return json(body={}, status=200)
-
-    async def patch(self, request):
-        return json(body={}, status=200)
-
-
-class User(HTTPMethodView):
-    manager = UserManager()
-
-    async def get(self, request):
-        return json(body={}, status=200)
-
+class AdminView(HTTPMethodView):
     async def post(self, request):
         return json(body={}, status=200)
 
-    async def patch(self, request):
+
+class AdminBatchView(HTTPMethodView):
+    async def get(self, request):
         return json(body={}, status=200)
 
 
+class AdminInfoView(HTTPMethodView):
+    async def get(self, request, admin_id):
+        return json(body={}, status=200)
 
+    async def patch(self, request, admin_id):
+        return json(body={}, status=200)
+
+    async def delete(self, request, admin_id):
+        return json(body={}, status=200)
+
+
+class AuthenticationManager(HTTPMethodView):
+    async def get(self, request):
+        return json(body={}, status=200)
+
+
+class UserView(HTTPMethodView):
+    async def post(self, request):
+        return json(body={}, status=200)
+
+
+class UserBatchView(HTTPMethodView):
+    async def get(self, request):
+        return json(body={}, status=200)
+
+
+class UserInfoView(HTTPMethodView):
+    async def get(self, request, user_email):
+        return json(body={}, status=200)
+
+    async def patch(self, request, user_email):
+        return json(body={}, status=200)
+
+    async def delete(self, request, user_email):
+        return json(body={}, status=200)
+
+
+class UserStatusView(HTTPMethodView):
+    async def get(self, request):
+        return json(body={}, status=200)
+
+    async def patch(self, request):
+        return json(body={}, status=200)
