@@ -2,8 +2,8 @@ from typing import Dict, Union, Iterable, Tuple, List
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from user.connection import MySQLConnection
-from user.descriptor import *
+from hermes.connection import MySQLConnection
+from hermes.descriptor import *
 
 
 class BaseModel:

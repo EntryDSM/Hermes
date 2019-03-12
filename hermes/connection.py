@@ -2,7 +2,7 @@ import os
 import aiomysql
 from typing import List, Dict, Any
 
-from user.config import settings
+from hermes.config import settings
 
 
 READ_CONNECTION_INFO = {

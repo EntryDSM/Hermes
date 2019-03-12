@@ -1,6 +1,6 @@
 import os
 
-from user.app import app
+from hermes.app import app
 
 
 if __name__ == "__main__":

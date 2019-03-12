@@ -1,6 +1,7 @@
 import aioredis
+import json
 
-from user.config import settings
+from hermes.config import settings
 
 
 class Cache:

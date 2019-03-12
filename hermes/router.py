@@ -1,6 +1,6 @@
 from sanic import Blueprint
 
-from user.view import (UserView, UserInfoView, UserStatusView, UserBatchView, AdminView, AdminInfoView, AdminBatchView)
+from hermes.view import (UserView, UserInfoView, UserStatusView, UserBatchView, AdminView, AdminInfoView, AdminBatchView)
 
 bp = Blueprint("user", url_prefix="/api/v1")
 

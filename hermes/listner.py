@@ -1,6 +1,6 @@
-from user.connection import MySQLConnection
-from user.cache import Cache
-from user.model import Admin, Applicant, ApplicantStatus
+from hermes.connection import MySQLConnection
+from hermes.cache import Cache
+from hermes.model import Admin, Applicant, ApplicantStatus
 
 
 async def initialize(app, roop):
