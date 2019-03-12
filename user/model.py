@@ -51,7 +51,7 @@ class Admin(BaseModel):
             ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
     """
 
-    admin_id = UUID(allow_none=False)
+    admin_id = String(length=45, allow_none=False)
     admin_password = Password(allow_none=False)
     admin_type = AdminEnum(allow_none=False)
     admin_email = Email(allow_none=False)

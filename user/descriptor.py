@@ -177,32 +177,6 @@ class Date(Type):
         super(Date, self).__set__(instance, value)
 
 
-class UUID(Type):
-    def __init__(self, allow_none=True):
-        super(UUID, self).__init__(default=uuid.uuid4().hex, allow_none=allow_none)
-
-    def __set__(self, instance, value):
-        if self.allow_none and value is None:
-            super(UUID, self).__set__(instance, value)
-            return
-
-        if isinstance(value, uuid.UUID):
-            super(UUID, self).__set__(instance, value.hex)
-            return
-        elif isinstance(value, str):
-            try:
-                value = uuid.UUID(value)
-            except Exception as e:
-                raise ValueError("given value is not valid UUID string")
-            super(UUID, self).__set__(instance, value.hex)
-        else:
-            raise ValueError("given value is not neither UUID string nor object")
-
-    def __get__(self, instance, owner):
-        uuid_string = super(UUID, self).__get__(instance, owner)
-        return uuid.UUID(uuid_string)
-
-
 class Email(String):
     def __set__(self, instance, value):
         if self.allow_none and value is None:
