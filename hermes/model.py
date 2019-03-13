@@ -59,14 +59,14 @@ class Admin(BaseModel):
     created_at = TimeStamp(default=datetime.datetime.now, allow_none=False)
     updated_at = TimeStamp(default=datetime.datetime.now, allow_none=False)
 
-    def __init__(self, admin_name, admin_email, admin_password, admin_type, admin_id=None, created_at=None, updated_at=None):
+    def __init__(self, admin_id, admin_name, admin_email, admin_password, admin_type, created_at=None, updated_at=None):
+        self.admin_id = admin_id
         self.admin_name = admin_name
         self.admin_email = admin_email
         self.admin_password = admin_password
         self.admin_type = admin_type
 
-        if created_at and updated_at and admin_id:
-            self.admin_id = admin_id
+        if created_at and updated_at:
             self.created_at = created_at
             self.updated_at = updated_at
 
@@ -78,7 +78,7 @@ class Admin(BaseModel):
                     admin_email,
                     admin_name,
                     created_at,
-                    updated_at,
+                    updated_at
                     ) VALUES (%s, %s, %s, %s, %s, %s, %s)"""
         await MySQLConnection.execute(query, self.admin_id, generate_password_hash(self.admin_password),
                                       self.admin_type, self.admin_email, self.admin_name,
@@ -93,6 +93,17 @@ class Admin(BaseModel):
                 """
 
         result = await MySQLConnection.fetchone(query, email)
+        return Admin(**result) if result else None
+
+    @classmethod
+    async def query_by_id(cls, admin_id: str) -> "Admin":
+        query = f"""
+                SELECT *
+                FROM {cls.table_name}
+                WHERE admin_id = %s
+                """
+
+        result = await MySQLConnection.fetchone(query, admin_id)
         return Admin(**result) if result else None
 
     @classmethod
