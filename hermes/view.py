@@ -5,9 +5,9 @@ from sanic.views import HTTPMethodView
 from sanic.response import json, text
 from enum import Enum
 
-from hermes.model import Admin
+from hermes.exceptions import BadRequest
 
-from hermes.manager import AdminManager
+from hermes.manager import AdminManager, AdminBatchManager
 
 
 class AdminView(HTTPMethodView):
@@ -24,7 +24,7 @@ class AdminView(HTTPMethodView):
             admin_type = self.AdminType(int(admin_info["type"]))
             admin_email = admin_info["email"]
         except KeyError as e:
-            return text(f"Invalid Parameter: {e.args[0]} is missing.", 400)
+            raise BadRequest(f"Invalid Parameter")
 
         await self.manager.register_admin(admin_id, admin_name, admin_email, admin_password, admin_type)
 
@@ -32,8 +32,14 @@ class AdminView(HTTPMethodView):
 
 
 class AdminBatchView(HTTPMethodView):
-    async def get(self, request):
-        return json(body={}, status=200)
+    manager = AdminBatchManager()
+
+    async def get(self, request: Request):
+        search_option = request.args
+
+        result = await self.manager.search_admins(**search_option)
+
+        return json(result, status=200)
 
 
 class AdminInfoView(HTTPMethodView):

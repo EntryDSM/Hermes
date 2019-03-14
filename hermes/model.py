@@ -51,6 +51,8 @@ class Admin(BaseModel):
             ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
     """
 
+    json: Dict[str, str]
+
     admin_id = String(length=45, allow_none=False)
     admin_password = Password(allow_none=False)
     admin_type = AdminEnum(allow_none=False)
@@ -69,6 +71,13 @@ class Admin(BaseModel):
         if created_at and updated_at:
             self.created_at = created_at
             self.updated_at = updated_at
+
+        self.json = {
+            "id": self.admin_id,
+            "name": self.admin_name,
+            "email": self.admin_email,
+            "type": self.admin_type
+        }
 
     async def save(self):
         query = f"""INSERT INTO {self.table_name} (
@@ -116,6 +125,23 @@ class Admin(BaseModel):
 
         result = await MySQLConnection.fetchone(query, name)
         return Admin(**result) if result else None
+
+    @classmethod
+    async def query(cls, **kwargs) -> List["Admin"]:
+        base_query = f"""
+        SELECT *
+        FROM {cls.table_name}\n
+        """
+
+        if kwargs:
+            base_query += "WHERE"
+            for k in kwargs.keys():
+                base_query += f" {k} = %s AND"
+            base_query = f"{base_query[:-3]};"
+
+        result = await MySQLConnection.fetch(base_query, *kwargs.values())
+
+        return [Admin(**r) for r in result] if result else None
 
     @classmethod
     async def get_type(cls, email: str) -> "Admin":
