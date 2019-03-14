@@ -38,3 +38,17 @@ class Cache:
     async def delete(cls, directory, key):
         await cls.redis.delete(f"user:{directory}:{key}")
 
+
+class UserCache:
+    async def set(self, user_id, user_info):
+        user_info = json.dumps(user_info)
+        await Cache.set("info", user_id, user_info)
+
+    async def get(self, user_id):
+        user_info = await Cache.get("info", user_id)
+        user_info = json.loads(user_info)
+
+        return user_info
+
+    async def delete(self, user_id):
+        await Cache.delete("info", user_id)
