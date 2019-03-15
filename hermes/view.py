@@ -7,7 +7,7 @@ from enum import Enum
 
 from hermes.exceptions import BadRequest
 
-from hermes.manager import AdminManager, AdminBatchManager
+from hermes.manager import AdminManager, AdminBatchManager, AdminInfoManager
 
 
 class AdminView(HTTPMethodView):
@@ -43,14 +43,33 @@ class AdminBatchView(HTTPMethodView):
 
 
 class AdminInfoView(HTTPMethodView):
-    async def get(self, request, admin_id):
-        return json(body={}, status=200)
+    AdminType = Enum("AdminType", ["ROOT", "ADMIN", "INTERVIEW"])
+    manager = AdminInfoManager()
 
-    async def patch(self, request, admin_id):
-        return json(body={}, status=200)
+    async def get(self, request: Request, admin_id):
+        admin = await self.manager.get_admin_info(admin_id)
+        return json(admin, 200)
+
+    async def patch(self, request: Request, admin_id):
+        patch_data = request.json
+
+        admin_name = patch_data.get("name")
+        admin_type = patch_data.get("type")
+        admin_type = self.AdminType(int(admin_type)) if admin_type else None
+        admin_email = patch_data.get("email")
+        admin_password = patch_data.get("password")
+
+        await self.manager.patch_admin_info(admin_id, admin_name=admin_name,
+                                            admin_email=admin_email,
+                                            admin_type=admin_type,
+                                            admin_password=admin_password)
+
+        return json(body=None, status=204)
 
     async def delete(self, request, admin_id):
-        return json(body={}, status=200)
+        await self.manager.delete_admin(admin_id)
+
+        return json(body=None, status=204)
 
 
 class AuthenticationManager(HTTPMethodView):

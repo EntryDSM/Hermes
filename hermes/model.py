@@ -93,6 +93,36 @@ class Admin(BaseModel):
                                       self.admin_type, self.admin_email, self.admin_name,
                                       self.created_at, self.updated_at)
 
+    async def update_info(self):
+        query = f"""
+        UPDATE {self.table_name}
+        SET admin_email = %s,
+            admin_type = %s,
+            admin_name = %s,
+            updated_at = %s
+        WHERE
+            admin_id = %s
+        """
+
+        await MySQLConnection.execute(query, self.admin_email, self.admin_type,
+                                      self.admin_name, datetime.datetime.now(), self.admin_id)
+
+    async def update_password(self):
+        query = f"""
+        UPDATE {self.table_name}
+        SET admin_password = %s,
+            updated_at = %s
+        WHERE
+            admin_id = %s
+        """
+        await MySQLConnection.execute(query, self.admin_password, datetime.datetime.now())
+
+    async def delete(self):
+        query = f"""
+        DELETE FROM {self.table_name} WHERE admin_id = %s
+        """
+        await MySQLConnection.execute(query, self.admin_id)
+
     @classmethod
     async def query_by_email(cls, email: str) -> "Admin":
         query = f"""
