@@ -1,6 +1,6 @@
 from sanic.response import text
 
-from exceptions import Conflict, BadRequest
+from exceptions import SanicException
 
 
 async def base_handler(request, exception):
@@ -8,5 +8,4 @@ async def base_handler(request, exception):
 
 
 def add_error_handlers(app):
-    app.error_handler.add(Conflict, base_handler)
-    app.error_handler.add(BadRequest, base_handler)
+    app.error_handler.add(SanicException, base_handler)
