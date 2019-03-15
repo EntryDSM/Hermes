@@ -1,7 +1,7 @@
 import re
 import datetime
 import uuid
-from typing import Iterable
+from typing import Tuple
 
 from validate_email import validate_email
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -105,7 +105,7 @@ class String(Type):
 
 
 class Enum(Type):
-    keys: Iterable[str]
+    keys: Tuple[str]
 
     def __init__(self, default=None, allow_none=True):
         if default and default not in self.keys:
@@ -119,6 +119,10 @@ class Enum(Type):
         if value not in self.keys:
             raise ValueError(f"value must be one of {self.keys} but '{value}' was given")
         super(Enum, self).__set__(instance, value)
+
+    def __get__(self, instance, owner):
+        str_form = super(Enum, self).__get__(instance, owner)
+        return self.keys.index(str_form)+1
 
 
 class Bool(Type):

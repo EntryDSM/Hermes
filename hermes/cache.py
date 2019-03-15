@@ -38,3 +38,20 @@ class Cache:
     async def delete(cls, directory, key):
         await cls.redis.delete(f"user:{directory}:{key}")
 
+
+class UserCache:
+    @staticmethod
+    async def set(user_id, user_info):
+        user_info = json.dumps(user_info)
+        await Cache.set("info", user_id, user_info)
+
+    @staticmethod
+    async def get(user_id):
+        user_info = await Cache.get("info", user_id)
+        user_info = json.loads(user_info) if user_info else None
+
+        return user_info
+
+    @staticmethod
+    async def delete(user_id):
+        await Cache.delete("info", user_id)

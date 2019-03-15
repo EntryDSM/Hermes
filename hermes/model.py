@@ -51,6 +51,8 @@ class Admin(BaseModel):
             ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
     """
 
+    json: Dict[str, str]
+
     admin_id = String(length=45, allow_none=False)
     admin_password = Password(allow_none=False)
     admin_type = AdminEnum(allow_none=False)
@@ -59,16 +61,23 @@ class Admin(BaseModel):
     created_at = TimeStamp(default=datetime.datetime.now, allow_none=False)
     updated_at = TimeStamp(default=datetime.datetime.now, allow_none=False)
 
-    def __init__(self, admin_name, admin_email, admin_password, admin_type, admin_id=None, created_at=None, updated_at=None):
+    def __init__(self, admin_id, admin_name, admin_email, admin_password, admin_type, created_at=None, updated_at=None):
+        self.admin_id = admin_id
         self.admin_name = admin_name
         self.admin_email = admin_email
         self.admin_password = admin_password
         self.admin_type = admin_type
 
-        if created_at and updated_at and admin_id:
-            self.admin_id = admin_id
+        if created_at and updated_at:
             self.created_at = created_at
             self.updated_at = updated_at
+
+        self.json = {
+            "id": self.admin_id,
+            "name": self.admin_name,
+            "email": self.admin_email,
+            "type": self.admin_type
+        }
 
     async def save(self):
         query = f"""INSERT INTO {self.table_name} (
@@ -78,11 +87,41 @@ class Admin(BaseModel):
                     admin_email,
                     admin_name,
                     created_at,
-                    updated_at,
+                    updated_at
                     ) VALUES (%s, %s, %s, %s, %s, %s, %s)"""
         await MySQLConnection.execute(query, self.admin_id, generate_password_hash(self.admin_password),
                                       self.admin_type, self.admin_email, self.admin_name,
                                       self.created_at, self.updated_at)
+
+    async def update_info(self):
+        query = f"""
+        UPDATE {self.table_name}
+        SET admin_email = %s,
+            admin_type = %s,
+            admin_name = %s,
+            updated_at = %s
+        WHERE
+            admin_id = %s
+        """
+
+        await MySQLConnection.execute(query, self.admin_email, self.admin_type,
+                                      self.admin_name, datetime.datetime.now(), self.admin_id)
+
+    async def update_password(self):
+        query = f"""
+        UPDATE {self.table_name}
+        SET admin_password = %s,
+            updated_at = %s
+        WHERE
+            admin_id = %s
+        """
+        await MySQLConnection.execute(query, self.admin_password, datetime.datetime.now())
+
+    async def delete(self):
+        query = f"""
+        DELETE FROM {self.table_name} WHERE admin_id = %s
+        """
+        await MySQLConnection.execute(query, self.admin_id)
 
     @classmethod
     async def query_by_email(cls, email: str) -> "Admin":
@@ -96,6 +135,17 @@ class Admin(BaseModel):
         return Admin(**result) if result else None
 
     @classmethod
+    async def query_by_id(cls, admin_id: str) -> "Admin":
+        query = f"""
+                SELECT *
+                FROM {cls.table_name}
+                WHERE admin_id = %s
+                """
+
+        result = await MySQLConnection.fetchone(query, admin_id)
+        return Admin(**result) if result else None
+
+    @classmethod
     async def query_by_name(cls, name: str) -> "Admin":
         query = f"""
         SELECT *
@@ -105,6 +155,23 @@ class Admin(BaseModel):
 
         result = await MySQLConnection.fetchone(query, name)
         return Admin(**result) if result else None
+
+    @classmethod
+    async def query(cls, **kwargs) -> List["Admin"]:
+        base_query = f"""
+        SELECT *
+        FROM {cls.table_name}\n
+        """
+
+        if kwargs:
+            base_query += "WHERE"
+            for k in kwargs.keys():
+                base_query += f" {k} = %s AND"
+            base_query = f"{base_query[:-3]};"
+
+        result = await MySQLConnection.fetch(base_query, *kwargs.values())
+
+        return [Admin(**r) for r in result] if result else None
 
     @classmethod
     async def get_type(cls, email: str) -> "Admin":
