@@ -1,7 +1,5 @@
 from typing import Dict, Union, Iterable, Tuple, List
 
-from werkzeug.security import check_password_hash, generate_password_hash
-
 from hermes.connection import MySQLConnection
 from hermes.descriptor import *
 

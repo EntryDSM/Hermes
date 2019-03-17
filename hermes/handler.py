@@ -1,6 +1,6 @@
 from sanic.response import text
 
-from exceptions import SanicException
+from hermes.exceptions import SanicException
 
 
 async def base_handler(request, exception):
