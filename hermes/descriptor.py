@@ -1,6 +1,5 @@
 import re
 import datetime
-import uuid
 from typing import Tuple
 
 from validate_email import validate_email
