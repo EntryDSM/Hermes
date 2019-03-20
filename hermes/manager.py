@@ -1,10 +1,15 @@
+from enum import Enum
+from typing import Union, NoReturn, List, Optional, Dict
+
 from hermes.model import Admin
 from hermes.exceptions import Conflict, BadRequest, NotFound
 from hermes.cache import UserCache
 
 
 class AdminManager:
-    async def register_admin(self, admin_id, admin_name, admin_email, admin_password, admin_type):
+    async def register_admin(self, admin_id: str, admin_name: str,
+                             admin_email: str, admin_password: str, admin_type: Enum) -> Optional[NoReturn]:
+
         if await Admin.query_by_id(admin_id):
             raise Conflict("Admin already exists")
 
@@ -20,7 +25,7 @@ class AdminManager:
 
 
 class AdminBatchManager:
-    async def search_admins(self, **kwargs):
+    async def search_admins(self, **kwargs) -> Union[NoReturn, List[Dict]]:
 
         try:
             admins = await Admin.query(**kwargs)
@@ -34,19 +39,20 @@ class AdminBatchManager:
 
 
 class AdminInfoManager:
-    async def get_admin_info(self, admin_id):
+    async def get_admin_info(self, admin_id: str) -> Union[NoReturn, Dict]:
 
-        admin = await UserCache.get(admin_id)
+        admin: Union[Admin, None] = await UserCache.get(admin_id)
         if not admin:
             admin = await Admin.query_by_id(admin_id)
             if not admin:
                 raise NotFound("Not Found")
-            admin = admin.json
+            admin: Dict = admin.json
             await UserCache.set(admin_id, admin)
 
         return admin
 
-    async def patch_admin_info(self, admin_id, **kwargs):
+    async def patch_admin_info(self, admin_id: str, **kwargs) -> None:
+
         admin = await Admin.query_by_id(admin_id)
         for i in kwargs.items():
             if i[1]:
@@ -60,7 +66,8 @@ class AdminInfoManager:
 
         await UserCache.delete(admin_id)
 
-    async def delete_admin(self, admin_id):
+    async def delete_admin(self, admin_id: str) -> None:
+
         admin = await Admin.query_by_id(admin_id)
         if not admin:
             raise NotFound("Not Found")

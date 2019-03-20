@@ -70,14 +70,14 @@ class Admin(BaseModel):
             self.created_at = created_at
             self.updated_at = updated_at
 
-        self.json = {
+        self.json: Dict = {
             "id": self.admin_id,
             "name": self.admin_name,
             "email": self.admin_email,
             "type": self.admin_type
         }
 
-    async def save(self):
+    async def save(self) -> None:
         query = f"""INSERT INTO {self.table_name} (
                     admin_id,
                     admin_password,
@@ -97,7 +97,7 @@ class Admin(BaseModel):
             self.updated_at
         )
 
-    async def update_info(self):
+    async def update_info(self) -> None:
         query = f"""
         UPDATE {self.table_name}
         SET admin_email = %s,
@@ -117,7 +117,7 @@ class Admin(BaseModel):
             self.admin_id
         )
 
-    async def update_password(self):
+    async def update_password(self) -> None:
         query = f"""
         UPDATE {self.table_name}
         SET admin_password = %s,
@@ -131,7 +131,7 @@ class Admin(BaseModel):
             datetime.datetime.now()
         )
 
-    async def delete(self):
+    async def delete(self) -> None:
         query = f"""
         DELETE FROM {self.table_name} WHERE admin_id = %s
         """
@@ -260,7 +260,7 @@ class Applicant(BaseModel):
             self.created_at = created_at
             self.updated_at = updated_at
 
-    async def save(self):
+    async def save(self) -> None:
         query = f"""
         INSERT INTO {self.table_name} (
             email,
@@ -296,7 +296,7 @@ class Applicant(BaseModel):
             self.updated_at
         )
 
-    async def update_info(self):
+    async def update_info(self) -> None:
         query = f"""UPDATE {self.table_name} 
             SET applicant_name = %s,
                 sex = %s,
@@ -325,7 +325,7 @@ class Applicant(BaseModel):
             self.email
         )
 
-    async def change_password(self, new_password: str):
+    async def change_password(self, new_password: str) -> None:
         query = f"UPDATE {self.table_name} SET password = %s, updated_at = %s WHERE email = %s"
         await MySQLConnection.execute(
             query,
@@ -408,26 +408,26 @@ class ApplicantStatus(BaseModel):
             self.created_at = created_at
             self.updated_at = updated_at
 
-    async def save(self):
+    async def save(self) -> None:
         query = f"INSERT INTO {self.table_name} (applicant_email) VALUES (%s)"
         await MySQLConnection.execute(query, self.applicant_email)
 
-    async def update_paid_status(self, paid: bool):
+    async def update_paid_status(self, paid: bool) -> None:
         query = f"UPDATE {self.table_name} SET is_paid = %s, updated_at = %s WHERE applicant_email = %s"
         await MySQLConnection.execute(query, paid, datetime.datetime.now(), self.applicant_email)
 
-    async def update_document_arrive_status(self, arrived: bool):
+    async def update_document_arrive_status(self, arrived: bool) -> None:
         query = f"UPDATE {self.table_name} SET is_printed_application_arrived = %s, updated_at = %s WHERE applicant_email = %s"
         await MySQLConnection.execute(query, arrived, datetime.datetime.now(), self.applicant_email)
 
-    async def update_apply_result_status(self, passed: bool):
+    async def update_apply_result_status(self, passed: bool) -> None:
         query = f"UPDATE {self.table_name} SET is_passed_first_apply = %s, updated_at = %s WHERE applicant_email = %s"
         await MySQLConnection.execute(query, passed, datetime.datetime.now(), self.applicant_email)
 
-    async def update_final_submit_status(self, submitted: bool):
+    async def update_final_submit_status(self, submitted: bool) -> None:
         query = f"UPDATE {self.table_name} SET is_final_submit = %s, updated_at = %s WHERE applicant_email = %s"
         await MySQLConnection.execute(query, submitted, datetime.datetime.now(), self.applicant_email)
 
-    async def set_exam_code(self, exam_code: str):
+    async def set_exam_code(self, exam_code: str) -> None:
         query = f"UPDATE {self.table_name} SET exam_code = %s, updated_at = %s WHERE applicant_email = %s"
         await MySQLConnection.execute(query, exam_code, datetime.datetime.now(), self.applicant_email)
