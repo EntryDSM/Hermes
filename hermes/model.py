@@ -87,9 +87,15 @@ class Admin(BaseModel):
                     created_at,
                     updated_at
                     ) VALUES (%s, %s, %s, %s, %s, %s, %s)"""
-        await MySQLConnection.execute(query, self.admin_id, generate_password_hash(self.admin_password),
-                                      self.admin_type, self.admin_email, self.admin_name,
-                                      self.created_at, self.updated_at)
+        await MySQLConnection.execute(
+            query, self.admin_id,
+            generate_password_hash(self.admin_password),
+            self.admin_type,
+            self.admin_email,
+            self.admin_name,
+            self.created_at,
+            self.updated_at
+        )
 
     async def update_info(self):
         query = f"""
@@ -102,8 +108,14 @@ class Admin(BaseModel):
             admin_id = %s
         """
 
-        await MySQLConnection.execute(query, self.admin_email, self.admin_type,
-                                      self.admin_name, datetime.datetime.now(), self.admin_id)
+        await MySQLConnection.execute(
+            query,
+            self.admin_email,
+            self.admin_type,
+            self.admin_name,
+            datetime.datetime.now(),
+            self.admin_id
+        )
 
     async def update_password(self):
         query = f"""
@@ -113,7 +125,11 @@ class Admin(BaseModel):
         WHERE
             admin_id = %s
         """
-        await MySQLConnection.execute(query, self.admin_password, datetime.datetime.now())
+        await MySQLConnection.execute(
+            query,
+            self.admin_password,
+            datetime.datetime.now()
+        )
 
     async def delete(self):
         query = f"""
@@ -263,9 +279,22 @@ class Applicant(BaseModel):
         ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
 
-        await MySQLConnection.execute(query, self.email, generate_password_hash(self.password), self.applicant_name,
-                                      self.sex, self.birth_date, self.parent_name, self.parent_tel, self.applicant_tel,
-                                      self.address, self.post_code, self.image_path, self.created_at, self.updated_at)
+        await MySQLConnection.execute(
+            query,
+            self.email,
+            generate_password_hash(self.password),
+            self.applicant_name,
+            self.sex,
+            self.birth_date,
+            self.parent_name,
+            self.parent_tel,
+            self.applicant_tel,
+            self.address,
+            self.post_code,
+            self.image_path,
+            self.created_at,
+            self.updated_at
+        )
 
     async def update_info(self):
         query = f"""UPDATE {self.table_name} 
@@ -281,13 +310,29 @@ class Applicant(BaseModel):
                 updated_at = %s
               WHERE email = %s
                 """
-        await MySQLConnection.execute(query, self.applicant_name, self.sex, self.birth_date, self.parent_name,
-                                      self.parent_tel, self.applicant_tel, self.address, self.post_code,
-                                      self.image_path, datetime.datetime.now(), self.email)
+        await MySQLConnection.execute(
+            query,
+            self.applicant_name,
+            self.sex,
+            self.birth_date,
+            self.parent_name,
+            self.parent_tel,
+            self.applicant_tel,
+            self.address,
+            self.post_code,
+            self.image_path,
+            datetime.datetime.now(),
+            self.email
+        )
 
     async def change_password(self, new_password: str):
         query = f"UPDATE {self.table_name} SET password = %s, updated_at = %s WHERE email = %s"
-        await MySQLConnection.execute(query, generate_password_hash(new_password), datetime.datetime.now(), self.email)
+        await MySQLConnection.execute(
+            query,
+            generate_password_hash(new_password),
+            datetime.datetime.now(),
+            self.email
+        )
 
     @classmethod
     async def query_by_email(cls, email: str) -> "Applicant":

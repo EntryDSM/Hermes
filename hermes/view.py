@@ -23,7 +23,7 @@ class AdminView(HTTPMethodView):
             admin_password = admin_info["password"]
             admin_type = self.AdminType(int(admin_info["type"]))
             admin_email = admin_info["email"]
-        except KeyError as e:
+        except KeyError:
             raise BadRequest(f"Invalid Parameter")
 
         await self.manager.register_admin(admin_id, admin_name, admin_email, admin_password, admin_type)

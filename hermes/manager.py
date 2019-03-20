@@ -8,21 +8,23 @@ class AdminManager:
         if await Admin.query_by_id(admin_id):
             raise Conflict("Admin already exists")
 
-        new_admin = Admin(admin_id=admin_id,
-                          admin_name=admin_name,
-                          admin_email=admin_email,
-                          admin_password=admin_password,
-                          admin_type=admin_type.name)
+        new_admin = Admin(
+            admin_id=admin_id,
+            admin_name=admin_name,
+            admin_email=admin_email,
+            admin_password=admin_password,
+            admin_type=admin_type.name
+        )
+
         await new_admin.save()
 
 
 class AdminBatchManager:
     async def search_admins(self, **kwargs):
-        admins = None
 
         try:
             admins = await Admin.query(**kwargs)
-        except Exception as e:
+        except Exception:
             raise BadRequest("Invalid query")
 
         if not admins:
@@ -33,7 +35,6 @@ class AdminBatchManager:
 
 class AdminInfoManager:
     async def get_admin_info(self, admin_id):
-        admin = None
 
         admin = await UserCache.get(admin_id)
         if not admin:
