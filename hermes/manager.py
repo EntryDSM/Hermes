@@ -21,7 +21,6 @@ class AdminManager:
 
 class AdminBatchManager:
     async def search_admins(self, **kwargs):
-        admins = None
 
         try:
             admins = await Admin.query(**kwargs)
@@ -36,7 +35,6 @@ class AdminBatchManager:
 
 class AdminInfoManager:
     async def get_admin_info(self, admin_id):
-        admin = None
 
         admin = await UserCache.get(admin_id)
         if not admin:
