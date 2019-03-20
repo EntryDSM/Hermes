@@ -1,32 +1,75 @@
-from typing import Dict
+from typing import Dict, Union
 
 from sanic.request import Request
 from sanic.views import HTTPMethodView
-from sanic.response import json,text
+from sanic.response import json, text
 from enum import Enum
 
-from hermes.manager import AdminManager
+from hermes.exceptions import BadRequest
+
+from hermes.manager import AdminManager, AdminBatchManager, AdminInfoManager
 
 
 class AdminView(HTTPMethodView):
-    async def post(self, request):
-        return json(body={}, status=200)
+    AdminType = Enum("AdminType", ["ROOT", "ADMIN", "INTERVIEW"])
+    manager = AdminManager()
+
+    async def post(self, request: Request):
+        admin_info: Dict = request.json
+
+        try:
+            admin_id: str = admin_info["id"]
+            admin_name: str = admin_info["name"]
+            admin_password: str = admin_info["password"]
+            admin_type: Enum = self.AdminType(int(admin_info["type"]))
+            admin_email: str = admin_info["email"]
+        except KeyError:
+            raise BadRequest(f"Invalid Parameter")
+
+        await self.manager.register_admin(admin_id, admin_name, admin_email, admin_password, admin_type)
+
+        return text("Successfully registered", status=200)
 
 
 class AdminBatchView(HTTPMethodView):
-    async def get(self, request):
-        return json(body={}, status=200)
+    manager = AdminBatchManager()
+
+    async def get(self, request: Request):
+        search_option: Dict = request.args
+
+        result = await self.manager.search_admins(**search_option)
+
+        return json(result, status=200)
 
 
 class AdminInfoView(HTTPMethodView):
-    async def get(self, request, admin_id):
-        return json(body={}, status=200)
+    AdminType = Enum("AdminType", ["ROOT", "ADMIN", "INTERVIEW"])
+    manager = AdminInfoManager()
 
-    async def patch(self, request, admin_id):
-        return json(body={}, status=200)
+    async def get(self, request: Request, admin_id):
+        admin = await self.manager.get_admin_info(admin_id)
+        return json(admin, 200)
+
+    async def patch(self, request: Request, admin_id):
+        patch_data: Dict = request.json
+
+        admin_name: Union[str, None] = patch_data.get("name")
+        admin_type: Union[str, None] = patch_data.get("type")
+        admin_type: Union[Enum, None] = self.AdminType(int(admin_type)) if admin_type else None
+        admin_email: Union[str, None] = patch_data.get("email")
+        admin_password: Union[str, None] = patch_data.get("password")
+
+        await self.manager.patch_admin_info(admin_id, admin_name=admin_name,
+                                            admin_email=admin_email,
+                                            admin_type=admin_type,
+                                            admin_password=admin_password)
+
+        return json(body=None, status=204)
 
     async def delete(self, request, admin_id):
-        return json(body={}, status=200)
+        await self.manager.delete_admin(admin_id)
+
+        return json(body=None, status=204)
 
 
 class AuthenticationManager(HTTPMethodView):

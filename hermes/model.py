@@ -1,7 +1,5 @@
 from typing import Dict, Union, Iterable, Tuple, List
 
-from werkzeug.security import check_password_hash, generate_password_hash
-
 from hermes.connection import MySQLConnection
 from hermes.descriptor import *
 
@@ -51,6 +49,8 @@ class Admin(BaseModel):
             ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ;
     """
 
+    json: Dict[str, str]
+
     admin_id = String(length=45, allow_none=False)
     admin_password = Password(allow_none=False)
     admin_type = AdminEnum(allow_none=False)
@@ -59,18 +59,25 @@ class Admin(BaseModel):
     created_at = TimeStamp(default=datetime.datetime.now, allow_none=False)
     updated_at = TimeStamp(default=datetime.datetime.now, allow_none=False)
 
-    def __init__(self, admin_name, admin_email, admin_password, admin_type, admin_id=None, created_at=None, updated_at=None):
+    def __init__(self, admin_id, admin_name, admin_email, admin_password, admin_type, created_at=None, updated_at=None):
+        self.admin_id = admin_id
         self.admin_name = admin_name
         self.admin_email = admin_email
         self.admin_password = admin_password
         self.admin_type = admin_type
 
-        if created_at and updated_at and admin_id:
-            self.admin_id = admin_id
+        if created_at and updated_at:
             self.created_at = created_at
             self.updated_at = updated_at
 
-    async def save(self):
+        self.json: Dict = {
+            "id": self.admin_id,
+            "name": self.admin_name,
+            "email": self.admin_email,
+            "type": self.admin_type
+        }
+
+    async def save(self) -> None:
         query = f"""INSERT INTO {self.table_name} (
                     admin_id,
                     admin_password,
@@ -78,11 +85,57 @@ class Admin(BaseModel):
                     admin_email,
                     admin_name,
                     created_at,
-                    updated_at,
+                    updated_at
                     ) VALUES (%s, %s, %s, %s, %s, %s, %s)"""
-        await MySQLConnection.execute(query, self.admin_id, generate_password_hash(self.admin_password),
-                                      self.admin_type, self.admin_email, self.admin_name,
-                                      self.created_at, self.updated_at)
+        await MySQLConnection.execute(
+            query, self.admin_id,
+            generate_password_hash(self.admin_password),
+            self.admin_type,
+            self.admin_email,
+            self.admin_name,
+            self.created_at,
+            self.updated_at
+        )
+
+    async def update_info(self) -> None:
+        query = f"""
+        UPDATE {self.table_name}
+        SET admin_email = %s,
+            admin_type = %s,
+            admin_name = %s,
+            updated_at = %s
+        WHERE
+            admin_id = %s
+        """
+
+        await MySQLConnection.execute(
+            query,
+            self.admin_email,
+            self.admin_type,
+            self.admin_name,
+            datetime.datetime.now(),
+            self.admin_id
+        )
+
+    async def update_password(self) -> None:
+        query = f"""
+        UPDATE {self.table_name}
+        SET admin_password = %s,
+            updated_at = %s
+        WHERE
+            admin_id = %s
+        """
+        await MySQLConnection.execute(
+            query,
+            self.admin_password,
+            datetime.datetime.now()
+        )
+
+    async def delete(self) -> None:
+        query = f"""
+        DELETE FROM {self.table_name} WHERE admin_id = %s
+        """
+        await MySQLConnection.execute(query, self.admin_id)
 
     @classmethod
     async def query_by_email(cls, email: str) -> "Admin":
@@ -96,6 +149,17 @@ class Admin(BaseModel):
         return Admin(**result) if result else None
 
     @classmethod
+    async def query_by_id(cls, admin_id: str) -> "Admin":
+        query = f"""
+                SELECT *
+                FROM {cls.table_name}
+                WHERE admin_id = %s
+                """
+
+        result = await MySQLConnection.fetchone(query, admin_id)
+        return Admin(**result) if result else None
+
+    @classmethod
     async def query_by_name(cls, name: str) -> "Admin":
         query = f"""
         SELECT *
@@ -105,6 +169,23 @@ class Admin(BaseModel):
 
         result = await MySQLConnection.fetchone(query, name)
         return Admin(**result) if result else None
+
+    @classmethod
+    async def query(cls, **kwargs) -> List["Admin"]:
+        base_query = f"""
+        SELECT *
+        FROM {cls.table_name}\n
+        """
+
+        if kwargs:
+            base_query += "WHERE"
+            for k in kwargs.keys():
+                base_query += f" {k} = %s AND"
+            base_query = f"{base_query[:-3]};"
+
+        result = await MySQLConnection.fetch(base_query, *kwargs.values())
+
+        return [Admin(**r) for r in result] if result else None
 
     @classmethod
     async def get_type(cls, email: str) -> "Admin":
@@ -179,7 +260,7 @@ class Applicant(BaseModel):
             self.created_at = created_at
             self.updated_at = updated_at
 
-    async def save(self):
+    async def save(self) -> None:
         query = f"""
         INSERT INTO {self.table_name} (
             email,
@@ -198,11 +279,24 @@ class Applicant(BaseModel):
         ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
 
-        await MySQLConnection.execute(query, self.email, generate_password_hash(self.password), self.applicant_name,
-                                      self.sex, self.birth_date, self.parent_name, self.parent_tel, self.applicant_tel,
-                                      self.address, self.post_code, self.image_path, self.created_at, self.updated_at)
+        await MySQLConnection.execute(
+            query,
+            self.email,
+            generate_password_hash(self.password),
+            self.applicant_name,
+            self.sex,
+            self.birth_date,
+            self.parent_name,
+            self.parent_tel,
+            self.applicant_tel,
+            self.address,
+            self.post_code,
+            self.image_path,
+            self.created_at,
+            self.updated_at
+        )
 
-    async def update_info(self):
+    async def update_info(self) -> None:
         query = f"""UPDATE {self.table_name} 
             SET applicant_name = %s,
                 sex = %s,
@@ -216,13 +310,29 @@ class Applicant(BaseModel):
                 updated_at = %s
               WHERE email = %s
                 """
-        await MySQLConnection.execute(query, self.applicant_name, self.sex, self.birth_date, self.parent_name,
-                                      self.parent_tel, self.applicant_tel, self.address, self.post_code,
-                                      self.image_path, datetime.datetime.now(), self.email)
+        await MySQLConnection.execute(
+            query,
+            self.applicant_name,
+            self.sex,
+            self.birth_date,
+            self.parent_name,
+            self.parent_tel,
+            self.applicant_tel,
+            self.address,
+            self.post_code,
+            self.image_path,
+            datetime.datetime.now(),
+            self.email
+        )
 
-    async def change_password(self, new_password: str):
+    async def change_password(self, new_password: str) -> None:
         query = f"UPDATE {self.table_name} SET password = %s, updated_at = %s WHERE email = %s"
-        await MySQLConnection.execute(query, generate_password_hash(new_password), datetime.datetime.now(), self.email)
+        await MySQLConnection.execute(
+            query,
+            generate_password_hash(new_password),
+            datetime.datetime.now(),
+            self.email
+        )
 
     @classmethod
     async def query_by_email(cls, email: str) -> "Applicant":
@@ -298,26 +408,26 @@ class ApplicantStatus(BaseModel):
             self.created_at = created_at
             self.updated_at = updated_at
 
-    async def save(self):
+    async def save(self) -> None:
         query = f"INSERT INTO {self.table_name} (applicant_email) VALUES (%s)"
         await MySQLConnection.execute(query, self.applicant_email)
 
-    async def update_paid_status(self, paid: bool):
+    async def update_paid_status(self, paid: bool) -> None:
         query = f"UPDATE {self.table_name} SET is_paid = %s, updated_at = %s WHERE applicant_email = %s"
         await MySQLConnection.execute(query, paid, datetime.datetime.now(), self.applicant_email)
 
-    async def update_document_arrive_status(self, arrived: bool):
+    async def update_document_arrive_status(self, arrived: bool) -> None:
         query = f"UPDATE {self.table_name} SET is_printed_application_arrived = %s, updated_at = %s WHERE applicant_email = %s"
         await MySQLConnection.execute(query, arrived, datetime.datetime.now(), self.applicant_email)
 
-    async def update_apply_result_status(self, passed: bool):
+    async def update_apply_result_status(self, passed: bool) -> None:
         query = f"UPDATE {self.table_name} SET is_passed_first_apply = %s, updated_at = %s WHERE applicant_email = %s"
         await MySQLConnection.execute(query, passed, datetime.datetime.now(), self.applicant_email)
 
-    async def update_final_submit_status(self, submitted: bool):
+    async def update_final_submit_status(self, submitted: bool) -> None:
         query = f"UPDATE {self.table_name} SET is_final_submit = %s, updated_at = %s WHERE applicant_email = %s"
         await MySQLConnection.execute(query, submitted, datetime.datetime.now(), self.applicant_email)
 
-    async def set_exam_code(self, exam_code: str):
+    async def set_exam_code(self, exam_code: str) -> None:
         query = f"UPDATE {self.table_name} SET exam_code = %s, updated_at = %s WHERE applicant_email = %s"
         await MySQLConnection.execute(query, exam_code, datetime.datetime.now(), self.applicant_email)

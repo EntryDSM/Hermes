@@ -1,3 +1,5 @@
+from typing import Union, Dict
+
 import aioredis
 import json
 
@@ -8,7 +10,7 @@ class Cache:
     redis: aioredis.Redis = None
 
     @classmethod
-    async def initialize(cls):
+    async def initialize(cls) -> aioredis.Redis:
         if cls.redis and not cls.redis.closed:
             return cls.redis
 
@@ -19,22 +21,29 @@ class Cache:
         return cls.redis
 
     @classmethod
-    async def destroy(cls):
+    async def destroy(cls) -> None:
         if cls.redis:
             cls.redis.close()
             await cls.redis.wait_closed()
 
         cls.redis = None
 
-    @classmethod
-    async def set(cls, directory, key, value, expire=None):
-        await cls.redis.set(f"user:{directory}:{key}", value, expire=expire)
+
+class UserCache:
+    _key_template: str = "hermes:info:{0}"
 
     @classmethod
-    async def get(cls, directory, key):
-        return await cls.redis.get(f"user:{directory}:{key}")
+    async def set(cls, user_id: str, user_info: dict) -> None:
+        user_info = json.dumps(user_info)
+        await Cache.redis.set(cls._key_template.format(user_id), user_info)
 
     @classmethod
-    async def delete(cls, directory, key):
-        await cls.redis.delete(f"user:{directory}:{key}")
+    async def get(cls, user_id: str) -> Union[Dict, None]:
+        user_info = await Cache.redis.get(cls._key_template.format(user_id))
+        user_info = json.loads(user_info) if user_info else None
 
+        return user_info
+
+    @classmethod
+    async def delete(cls, user_id) -> None:
+        await Cache.redis.delete(cls._key_template.format(user_id))
