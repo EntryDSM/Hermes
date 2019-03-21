@@ -191,7 +191,7 @@ Content-Type: text/plain; charset=utf-8
 ## DELETE
 
 ```http
-GET /api/v1/admin/entry2019root HTTP/1.1
+DELETE /api/v1/admin/entry2019root HTTP/1.1
 Host: api.entrydsm.hs.kr
 User-Agent: your-client/1.0
 ```
