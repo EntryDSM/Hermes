@@ -42,6 +42,9 @@ Accept: */*
 HTTP/1.1 200 OK
 Content-Type: text/plain; charset=utf-8
 
+HTTP/1.1 400 Bad Request
+Content-Type: text/plain; charset=utf-8
+
 HTTP/1.1 409 Conflict
 Content-Type: text/plain; charset=utf-8
 
@@ -55,13 +58,13 @@ Content-Type: text/plain; charset=utf-8
 
 ### Attributes
 
-| name     | type | description                                 | default |
-|----------|------|---------------------------------------------|---------|
-| id       | str  | admin id                                    |         |
-| name     | str  | admin name                                  |         |
-| password | str  | password                                    |         |
-| type     | int  | admin type  `0: ROOT 1: ADMIN 2: INTERVIEW` |         |
-| email    | str  | admin email                                 |         |
+| name     | type | description                                 | required |
+|----------|------|---------------------------------------------|----------|
+| id       | str  | admin id                                    |O         |
+| name     | str  | admin name                                  |O         |
+| password | str  | password                                    |O         |
+| type     | int  | admin type  `0: ROOT 1: ADMIN 2: INTERVIEW` |O         |
+| email    | str  | admin email                                 |O         |
 
 <aside class="notice">
 type에 올바른 정수가 들어가 있는지 확인해 주세요
@@ -96,9 +99,6 @@ Content-Type: text/plain; charset=utf-8
   }
 ]
 
-HTTP/1.1 400 Bad Request
-Content-Type: text/plain; charset=utf-8
-
 HTTP/1.1 401 Unauthorized
 Content-Type: text/plain; charset=utf-8
 ```
@@ -106,16 +106,12 @@ Content-Type: text/plain; charset=utf-8
 
 ### Query Parameters
 
-| name     | type | description                                 | default |
-|----------|------|---------------------------------------------|---------|
-| id       | str  | admin id                                    |         |
-| name     | str  | admin name                                  |         |
-| type     | int  | admin type  `0: ROOT 1: ADMIN 2: INTERVIEW` |         |
-| email    | str  | admin email                                 |         |
-
-<aside class="notice">
-허용되지 않은 쿼리 파라미터가 들어있다면 `400 Bad Request` 를 반환합니다
-</aside>
+| name     | type | description                                 | required |
+|----------|------|---------------------------------------------|----------|
+| id       | str  | admin id                                    |X         |
+| name     | str  | admin name                                  |X         |
+| type     | int  | admin type  `0: ROOT 1: ADMIN 2: INTERVIEW` |X         |
+| email    | str  | admin email                                 |X         |
 
 # /admin/<admin_id>
 ## GET
@@ -145,6 +141,48 @@ HTTP/1.1 401 Unauthorized
 Content-Type: text/plain; charset=utf-8
 ```
 하나의 어드민 정보를 가져옵니다
+
+<aside class="notice">
+조회할 수 없다면 404를 반환합니다
+</aside>
+
+## PATCH
+
+```http
+PATCH /api/v1/admin/entry2019admin HTTP/1.1
+Host: api.entrydsm.hs.kr
+User-Agent: your-client/1.0
+{
+	"id": "entry2019root2",
+	"name": "태민차",
+	"email": "qwer@gmail.com"
+}
+```
+
+> Response will be like this:
+
+```
+HTTP/1.1 204 No Content
+Content-Type: text/plain; charset=utf-8
+
+HTTP/1.1 404 Not Found
+Content-Type: text/plain; charset=utf-8
+
+HTTP/1.1 401 Unauthorized
+Content-Type: text/plain; charset=utf-8
+```
+하나의 어드민 정보를 패치합니다
+
+### Attributes
+
+| name     | type | description                                 | required |
+|----------|------|---------------------------------------------|----------|
+| id       | str  | admin id                                    |X         |
+| name     | str  | admin name                                  |X         |
+| password | str  | password                                    |X         |
+| type     | int  | admin type  `0: ROOT 1: ADMIN 2: INTERVIEW` |X         |
+| email    | str  | admin email                                 |X         |
+
 
 <aside class="notice">
 조회할 수 없다면 404를 반환합니다
