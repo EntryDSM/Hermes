@@ -35,7 +35,9 @@ Accept: */*
 	"email": "asdf@gmail.com"
 }
 ```
-> Response will be like this
+
+> Response will be like this:
+
 ```
 HTTP/1.1 200 OK
 Content-Type: text/plain; charset=utf-8
