@@ -58,13 +58,13 @@ Content-Type: text/plain; charset=utf-8
 
 ### Attributes
 
-| name     | type | description                               | default |
-|----------|------|-------------------------------------------|---------|
-| id       | str  | admin id                                  |         |
-| name     | str  | admin name                                |         |
-| password | str  | password                                  |         |
-| type     | int  | admin type  0: ROOT 1: ADMIN 2: INTERVIEW |         |
-| email    | str  | admin email                               |         |
+| name     | type | description                                 | default |
+|----------|------|---------------------------------------------|---------|
+| id       | str  | admin id                                    |         |
+| name     | str  | admin name                                  |         |
+| password | str  | password                                    |         |
+| type     | int  | admin type  `0: ROOT 1: ADMIN 2: INTERVIEW` |         |
+| email    | str  | admin email                                 |         |
 
 <aside class="notice">
 type에 올바른 정수가 들어가 있는지 확인해 주세요
