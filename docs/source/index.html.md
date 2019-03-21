@@ -43,8 +43,24 @@ Content-Type: text/plain; charset=utf-8
 HTTP/1.1 409 Conflict
 Content-Type: text/plain; charset=utf-8
 
+HTTP/1.1 404 Not Found
+Content-Type: text/plain; charset=utf-8
 
 HTTP/1.1 401 Unauthorized
 Content-Type: text/plain; charset=utf-8
 ```
 어드민 계정 정보를 생성할 때 사용합니다
+
+### Attributes
+
+| name     | type | description                               | default |
+|----------|------|-------------------------------------------|---------|
+| id       | str  | admin id                                  |         |
+| name     | str  | admin name                                |         |
+| password | str  | password                                  |         |
+| type     | int  | admin type  0: ROOT 1: ADMIN 2: INTERVIEW |         |
+| email    | str  | admin email                               |         |
+
+<aside class="notice">
+type에 올바른 정수가 들어가 있는지 확인해 주세요
+</aside>
