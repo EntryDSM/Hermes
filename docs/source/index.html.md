@@ -83,7 +83,7 @@ User-Agent: your-client/1.0
 
 ```
 HTTP/1.1 200 OK
-Content-Type: text/plain; charset=utf-8
+Content-Type: application/json; charset=utf-8
 [
   {
     "id": "entry2019root",
@@ -126,7 +126,7 @@ User-Agent: your-client/1.0
 
 ```
 HTTP/1.1 200 OK
-Content-Type: text/plain; charset=utf-8
+Content-Type: application/json; charset=utf-8
 {
   "id": "entry2019admin",
   "name": "준모연",
@@ -153,7 +153,6 @@ PATCH /api/v1/admin/entry2019admin HTTP/1.1
 Host: api.entrydsm.hs.kr
 User-Agent: your-client/1.0
 {
-	"id": "entry2019root2",
 	"name": "태민차",
 	"email": "qwer@gmail.com"
 }
@@ -177,7 +176,6 @@ Content-Type: text/plain; charset=utf-8
 
 | name     | type | description                                 | required |
 |----------|------|---------------------------------------------|----------|
-| id       | str  | admin id                                    |X         |
 | name     | str  | admin name                                  |X         |
 | password | str  | password                                    |X         |
 | type     | int  | admin type  `0: ROOT 1: ADMIN 2: INTERVIEW` |X         |
