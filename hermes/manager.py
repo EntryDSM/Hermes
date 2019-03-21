@@ -26,11 +26,13 @@ class AdminManager:
 
 class AdminBatchManager:
     async def search_admins(self, **kwargs) -> Union[NoReturn, List[Dict]]:
+        search_options: Dict = dict()
 
-        try:
-            admins = await Admin.query(**kwargs)
-        except Exception:
-            raise BadRequest("Invalid query")
+        for i in kwargs.items():
+            if i[1]:
+                search_options.update({i[0]: i[1]})
+
+        admins = await Admin.query(**search_options)
 
         if not admins:
             raise NotFound("Not Found")
@@ -54,6 +56,10 @@ class AdminInfoManager:
     async def patch_admin_info(self, admin_id: str, **kwargs) -> None:
 
         admin = await Admin.query_by_id(admin_id)
+
+        if not admin:
+            raise NotFound("Not Found")
+
         for i in kwargs.items():
             if i[1]:
                 admin.__setattr__(i[0], i[1])
