@@ -187,3 +187,29 @@ Content-Type: text/plain; charset=utf-8
 <aside class="notice">
 조회할 수 없다면 404를 반환합니다
 </aside>
+
+## DELETE
+
+```http
+GET /api/v1/admin/entry2019root HTTP/1.1
+Host: api.entrydsm.hs.kr
+User-Agent: your-client/1.0
+```
+
+> Response will be like this:
+
+```
+HTTP/1.1 204 No Content
+Content-Type: text/plain; charset=utf-8
+
+HTTP/1.1 404 Not Found
+Content-Type: text/plain; charset=utf-8
+
+HTTP/1.1 401 Unauthorized
+Content-Type: text/plain; charset=utf-8
+```
+하나의 어드민 정보를 삭제합니다.
+
+<aside class="notice">
+조회할 수 없다면 404를 반환합니다
+</aside>
