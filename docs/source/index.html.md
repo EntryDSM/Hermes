@@ -34,8 +34,9 @@ Accept: */*
 	"type": 1,
 	"email": "asdf@gmail.com"
 }
-
-
+```
+> Response will be like this
+```
 HTTP/1.1 200 OK
 Content-Type: text/plain; charset=utf-8
 
@@ -43,8 +44,10 @@ Content-Type: text/plain; charset=utf-8
 HTTP/1.1 409 Conflict
 Content-Type: text/plain; charset=utf-8
 
+
 HTTP/1.1 404 Not Found
 Content-Type: text/plain; charset=utf-8
+
 
 HTTP/1.1 401 Unauthorized
 Content-Type: text/plain; charset=utf-8
