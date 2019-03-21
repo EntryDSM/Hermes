@@ -102,7 +102,7 @@ Content-Type: text/plain; charset=utf-8
 HTTP/1.1 401 Unauthorized
 Content-Type: text/plain; charset=utf-8
 ```
-어드민 계정 정보를 생성할 때 사용합니다
+다량의 어드민 정보를 가져올 때 사용합니다.
 
 ### Query Parameters
 
@@ -115,4 +115,37 @@ Content-Type: text/plain; charset=utf-8
 
 <aside class="notice">
 허용되지 않은 쿼리 파라미터가 들어있다면 `400 Bad Request` 를 반환합니다
+</aside>
+
+# /admin/<admin_id>
+## GET
+
+```http
+GET /api/v1/admin/entry2019admin HTTP/1.1
+Host: api.entrydsm.hs.kr
+User-Agent: your-client/1.0
+```
+
+> Response will be like this:
+
+```
+HTTP/1.1 200 OK
+Content-Type: text/plain; charset=utf-8
+{
+  "id": "entry2019admin",
+  "name": "준모연",
+  "email": "qwer@gmail.com",
+  "type": 2
+}
+
+HTTP/1.1 404 Not Found
+Content-Type: text/plain; charset=utf-8
+
+HTTP/1.1 401 Unauthorized
+Content-Type: text/plain; charset=utf-8
+```
+하나의 어드민 정보를 가져옵니다
+
+<aside class="notice">
+조회할 수 없다면 404를 반환합니다
 </aside>
