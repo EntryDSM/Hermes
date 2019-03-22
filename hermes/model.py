@@ -128,7 +128,8 @@ class Admin(BaseModel):
         await MySQLConnection.execute(
             query,
             self.admin_password,
-            datetime.datetime.now()
+            datetime.datetime.now(),
+            self.admin_id
         )
 
     async def delete(self) -> None:
@@ -190,7 +191,7 @@ class Admin(BaseModel):
     @classmethod
     async def get_type(cls, email: str) -> "Admin":
         query = f"""
-                SELECT *
+                SELECT admin_type
                 FROM {cls.table_name}
                 WHERE admin_email = %s
                 """

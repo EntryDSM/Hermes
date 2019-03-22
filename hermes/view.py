@@ -32,12 +32,26 @@ class AdminView(HTTPMethodView):
 
 
 class AdminBatchView(HTTPMethodView):
+    AdminType = Enum("AdminType", ["ROOT", "ADMIN", "INTERVIEW"])
     manager = AdminBatchManager()
 
     async def get(self, request: Request):
-        search_option: Dict = request.args
+        search_options: Dict = request.args
 
-        result = await self.manager.search_admins(**search_option)
+        admin_name: Union[str, None] = search_options.get("name")
+        admin_type: Union[str, None] = search_options.get("type")
+        admin_type: Union[Enum, None] = self.AdminType(int(admin_type)) if admin_type else None
+        admin_email: Union[str, None] = search_options.get("email")
+        admin_password: Union[str, None] = search_options.get("password")
+
+        search_options = dict(
+            admin_name=admin_name,
+            admin_type=admin_type,
+            admin_password=admin_password,
+            admin_email=admin_email
+        )
+
+        result = await self.manager.search_admins(**search_options)
 
         return json(result, status=200)
 
