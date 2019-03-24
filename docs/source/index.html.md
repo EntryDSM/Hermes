@@ -8,9 +8,6 @@ toc_footers:
   - <a href='https://github.com/EntryDSM/Hermes'>Go to repository</a>
   - <a href='https://github.com/lord/slate'>Documentation Powered by Slate</a>
 
-includes:
-  - errors
-
 search: true
 ---
 
@@ -510,8 +507,7 @@ Content-Type: text/plain; charset=utf-8
 HTTP/1.1 401 Unauthorized
 Content-Type: text/plain; charset=utf-8
 ```
-어드민 계정 정보를 생성할 때 사용합니다
-
+인증을 수행합니다.
 ### Permisions
 |||
 |--------------------|-------|
