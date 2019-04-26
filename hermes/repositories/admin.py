@@ -78,3 +78,18 @@ class AdminPersistentRepository:
 
         return await self.connection.fetchone(query, admin_id)
 
+
+class AdminCacheRepository:
+    _key_template: str = "hermes:admin:{0}"
+
+    def __init__(self, connection: Type[CacheConnection]):
+        self.connection = connection
+
+    async def set(self, admin: Dict[str, Any]) -> None:
+        await self.connection.set(self._key_template.format(admin["admin_id"]), admin)
+
+    async def get(self, admin_id: str) -> Dict[str, Any]:
+        return await self.connection.get(self._key_template.format(admin_id))
+
+    async def delete(self, admin_id: str) -> None:
+        return await self.connection.delete(self._key_template.format(admin_id))
