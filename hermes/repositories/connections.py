@@ -147,3 +147,43 @@ class CacheConnection(ABC):
     @abstractmethod
     async def delete(cls, key: str) -> None: ...
 
+
+class RedisConnection(CacheConnection):
+    redis: aioredis.Redis = None
+
+    @classmethod
+    async def initialize(cls, connection_info):
+        if cls.redis and not cls.redis.closed:
+            return cls.redis
+
+        cls.redis = await aioredis.create_redis_pool(**connection_info)
+
+        return cls.redis
+
+    @classmethod
+    async def destroy(cls):
+        if cls.redis:
+            cls.redis.close()
+            await cls.redis.wait_closed()
+
+        cls.redis = None
+
+    @classmethod
+    async def set(cls, key: str, value: Dict[str, Any]) -> None:
+        value = json.dumps(value)
+        await cls.redis.set(key, value)
+
+    @classmethod
+    async def get(cls, key: str) -> Optional[Dict[str, Any]]:
+        value = await cls.redis.get(key)
+        value = json.loads(value) if value else None
+
+        return value
+
+    @classmethod
+    async def delete(cls, key: str) -> None:
+        await cls.redis.delete(key)
+
+    @classmethod
+    async def flush_all(cls):
+        await cls.redis.flushall()
