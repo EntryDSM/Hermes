@@ -5,6 +5,9 @@ from marshmallow import Schema as BaseSchema, EXCLUDE
 from marshmallow.fields import Email, Date, Integer, Boolean, String as BaseString
 from marshmallow import post_load
 
+from hermes.entities.admin import Admin
+from hermes.entities.applicant import Applicant, ApplicantStatus
+
 
 class String(BaseString):
     def __init__(self, length=None, regex=None, **kwargs):
@@ -27,10 +30,12 @@ class Schema(BaseSchema):
 
     @post_load
     def deserialize(self, data):
-        return self.__entity__.load(**data)
+        return self.__entity__(**data)
 
 
 class AdminSchema(Schema):
+    __entity__ = Admin
+
     admin_id = String(required=True, allow_none=False, length=45)
     admin_password = String(required=True, allow_none=False, length=13)
     admin_type = Enum(required=True, allow_none=False, enum=['ROOT', 'ADMIN', 'INTERVIEW'])
@@ -39,6 +44,8 @@ class AdminSchema(Schema):
 
 
 class AdminPatchSchema(Schema):
+    __entity__ = Admin
+
     admin_id = String(required=False, allow_none=False, length=45)
     admin_password = String(required=False, allow_none=False, length=13)
     admin_type = Enum(required=False, allow_none=False, enum=['ROOT', 'ADMIN', 'INTERVIEW'])
@@ -47,6 +54,8 @@ class AdminPatchSchema(Schema):
 
 
 class ApplicantSchema(Schema):
+    __entity__ = Applicant
+
     email = Email(required=True, allow_none=False)
     password = String(required=True, allow_none=False, length=320)
     applicant_name = String(missing=None, length=13)
@@ -61,6 +70,8 @@ class ApplicantSchema(Schema):
 
 
 class ApplicantStatusSchema(Schema):
+    __entity__ = ApplicantStatus
+
     applicant_email = Email(required=True, allow_none=False)
     receipt_code = Integer(missing=None)
     is_paid = Boolean(missing=False)
