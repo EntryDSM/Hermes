@@ -1,12 +1,10 @@
 from sanic.log import logger
 
-from hermes.misc.config import VaultClient, settings
+from hermes.misc.config import settings
 from hermes.repositories.connections import MySQLConnection, RedisConnection
 
 
 async def initialize(app, loop):
-    VaultClient.initialize()
-
     database_connection_info = (
         app.database_connection_info
         if hasattr(app, "database_connection_info")
