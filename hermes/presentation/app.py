@@ -1,10 +1,9 @@
 from sanic import Sanic
 
 from hermes.misc.constants import LISTENER_OPTION, LOGO, SERVICE_NAME
-
-from hermes.presentation.views.router import bp
 from hermes.presentation.handler import add_error_handlers
 from hermes.presentation.listener import initialize, release
+from hermes.presentation.views.router import bp
 
 
 def create_app() -> Sanic:

@@ -1,7 +1,9 @@
-from typing import Any, Dict, Type
+from typing import Dict
+
 import hvac
 
-from hermes.misc.constants import VAULT_ADDRESS, SERVICE_NAME, VAULT_TOKEN, GITHUB_TOKEN, RUN_ENV
+from hermes.misc.constants import (GITHUB_TOKEN, RUN_ENV, SERVICE_NAME,
+                                   VAULT_ADDRESS, VAULT_TOKEN)
 
 
 class VaultClient:
@@ -18,7 +20,7 @@ class VaultClient:
 
     def __getattr__(self, item):
         try:
-            data = self.client.read(f'service-secret/{RUN_ENV}/{SERVICE_NAME}')["data"]
+            data = self.client.read(f"service-secret/{RUN_ENV}/{SERVICE_NAME}")["data"]
             return data[item]
         except KeyError as e:
             raise Exception(f"requested key {item} is can't be fetched")
@@ -29,10 +31,12 @@ class VaultClient:
     def database_credential(self) -> Dict[str, str]:
         try:
             if not self._database_credential:
-                data = self.client.read(f"database/creds/{SERVICE_NAME}-{RUN_ENV}")["data"]
+                data = self.client.read(f"database/creds/{SERVICE_NAME}-{RUN_ENV}")[
+                    "data"
+                ]
                 self._database_credential = {
                     "username": data["username"],
-                    "password": data["password"]
+                    "password": data["password"],
                 }
         except Exception as e:
             raise e
@@ -50,23 +54,23 @@ class Setting:
     @property
     def database_connection_info(self):
         return {
-            'use_unicode': True,
-            'charset': 'utf8mb4',
-            'user': self.vault_client.database_credential["username"],
-            'password': self.vault_client.database_credential["password"],
-            'db': self.vault_client.MYSQL_DATABASE,
-            'host': self.vault_client.MYSQL_HOST,
-            'port': self.vault_client.MYSQL_PORT,
-            'loop': None,
-            'autocommit': True
+            "use_unicode": True,
+            "charset": "utf8mb4",
+            "user": self.vault_client.database_credential["username"],
+            "password": self.vault_client.database_credential["password"],
+            "db": self.vault_client.MYSQL_DATABASE,
+            "host": self.vault_client.MYSQL_HOST,
+            "port": self.vault_client.MYSQL_PORT,
+            "loop": None,
+            "autocommit": True,
         }
 
     @property
     def cache_connection_info(self):
         return {
-            "address": f'redis://:{self.vault_client.REDIS_PASSWORD}@{self.vault_client.REDIS_HOST}:{self.vault_client.REDIS_PORT}',
+            "address": f"redis://:{self.vault_client.REDIS_PASSWORD}@{self.vault_client.REDIS_HOST}:{self.vault_client.REDIS_PORT}",  # pylint: disable=line-too-long
             "minsize": 5,
-            "maxsize": 10
+            "maxsize": 10,
         }
 
     DEBUG = False if RUN_ENV == "prod" else True
@@ -74,4 +78,4 @@ class Setting:
     RUN_HOST = "0.0.0.0"
 
 
-settings = Setting(VaultClient())
+settings = Setting(VaultClient())  # pylint: disable=invalid-name

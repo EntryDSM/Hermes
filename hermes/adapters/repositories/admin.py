@@ -1,18 +1,24 @@
 from dataclasses import asdict
-from typing import Type, Optional, Dict, List, Any
+from typing import Any, Dict, List, Optional, Type
 
-from marshmallow import Schema
 from pymysql.err import IntegrityError
 
 from hermes.adapters import AbstractAdapter
+from hermes.adapters.schema import AdminSchema, Schema
 from hermes.entities.admin import Admin
-from hermes.repositories.admin import AdminPersistentRepository, AdminCacheRepository
-from hermes.repositories.connections import DBConnection, CacheConnection
-from hermes.misc.exceptions import AdminAlreadyExistException, AdminNotFoundException
+from hermes.misc.exceptions import (AdminAlreadyExistException,
+                                    AdminNotFoundException)
+from hermes.repositories.admin import (AdminCacheRepository,
+                                       AdminPersistentRepository)
+from hermes.repositories.connections import CacheConnection, DBConnection
 
 
 class AdminRepositoryAdapter(AbstractAdapter):
-    def __init__(self, db_connection: Type[DBConnection], cache_connection: Type[CacheConnection]):
+    schema = AdminSchema()
+
+    def __init__(
+        self, db_connection: Type[DBConnection], cache_connection: Type[CacheConnection]
+    ):
         self.persistence_repository = AdminPersistentRepository(db_connection)
         self.cache_repository = AdminCacheRepository(cache_connection)
 
@@ -31,9 +37,11 @@ class AdminRepositoryAdapter(AbstractAdapter):
         await self.persistence_repository.patch(admin_id, patch_data)
         await self.cache_repository.delete(admin_id)
 
-    async def get_list(self, filters: Optional[Dict[str, str]] = None) -> List[Optional[Admin]]:
+    async def get_list(
+        self, filters: Optional[Dict[str, str]] = None
+    ) -> List[Optional[Admin]]:
         data_list = await self.persistence_repository.get_list(filters)
-        return [self._data_to_entity(data) for data in data_list]
+        return [self._data_to_entity(self.schema, data) for data in data_list]
 
     async def get_one(self, admin_id: str) -> Optional[Admin]:
         data = await self.cache_repository.get(admin_id)
@@ -43,7 +51,7 @@ class AdminRepositoryAdapter(AbstractAdapter):
                 raise AdminNotFoundException("Not Found")
 
         await self.cache_repository.set(data)
-        return self._data_to_entity(data)
+        return self._data_to_entity(self.schema, data)
 
     @classmethod
     def _entity_to_data(cls, schema: Schema, entity: Admin) -> Dict[str, Any]:

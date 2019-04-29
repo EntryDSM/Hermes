@@ -1,9 +1,12 @@
 from sanic import Blueprint
 
-from hermes.presentation.views.admin import (AdminView, AdminDetailView, AdminBatchView)
-# from hermes_v2.presentation.views.applicant import (UserView, UserInfoView, UserStatusView, UserBatchView)
+from hermes.presentation.views.admin import (AdminBatchView, AdminDetailView,
+                                             AdminView)
 
-bp = Blueprint("user", url_prefix="/api/v1")
+# from hermes_v2.presentation.views.applicant import (UserView, UserInfoView,
+#                                                     UserStatusView, UserBatchView)
+
+bp = Blueprint("user", url_prefix="/api/v1")  # pylint: disable=invalid-name
 
 # bp.add_route(UserView.as_view(), "/user")
 # bp.add_route(UserInfoView.as_view(), "/user/<user_email>")

@@ -6,6 +6,7 @@ from hermes.misc.exceptions import SanicException
 
 
 async def base_handler(request: Request, exception: SanicException):
+    # pylint: disable=unused-argument
     return text(exception.args[0], exception.status_code)
 
 

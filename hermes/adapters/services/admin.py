@@ -1,28 +1,30 @@
-from typing import NoReturn, Optional, Dict, List, Any
+from typing import Any, Dict, List, Optional
 
 from marshmallow import ValidationError
-from sanic.exceptions import NotFound
 from pymysql.err import InternalError
+from sanic.exceptions import NotFound
 
 from hermes.adapters import AbstractAdapter
 from hermes.adapters.repositories.admin import AdminRepositoryAdapter
+from hermes.adapters.schema import AdminPatchSchema, AdminSchema, Schema
 from hermes.entities.admin import Admin
-from hermes.misc.exceptions import AdminAlreadyExistException, AdminNotFoundException
-from hermes.misc.exceptions import Conflict, BadRequest
+from hermes.misc.exceptions import (AdminAlreadyExistException,
+                                    AdminNotFoundException, BadRequest,
+                                    Conflict)
 from hermes.repositories.external_service import ExternalService
 from hermes.services.admin import AdminService
-
-from hermes.adapters.schema import AdminSchema, AdminPatchSchema, Schema
 
 
 class AdminServiceAdapter(AbstractAdapter):
     schema = AdminSchema()
     patch_schema = AdminPatchSchema()
 
-    def __init__(self, repository: AdminRepositoryAdapter, external_service: ExternalService):
+    def __init__(
+        self, repository: AdminRepositoryAdapter, external_service: ExternalService
+    ):
         self.service = AdminService(repository, external_service)
 
-    async def create(self, admin_data: Dict[str, str]) -> Optional[NoReturn]:
+    async def create(self, admin_data: Dict[str, str]) -> None:
         try:
             admin = self._data_to_entity(self.schema, admin_data)
         except ValidationError:
@@ -33,13 +35,13 @@ class AdminServiceAdapter(AbstractAdapter):
         except AdminAlreadyExistException as e:
             raise Conflict(e.args[0])
 
-    async def delete(self, admin_id: str) -> Optional[NoReturn]:
+    async def delete(self, admin_id: str) -> None:
         try:
             await self.service.delete(admin_id)
         except AdminNotFoundException as e:
             raise NotFound(e.args[0])
 
-    async def patch(self, admin_id: str, patch_data: Dict[str, str]) -> Optional[NoReturn]:
+    async def patch(self, admin_id: str, patch_data: Dict[str, str]) -> None:
         try:
             patch_data = self._data_to_entity(self.patch_schema, patch_data)
         except ValidationError:
@@ -50,7 +52,9 @@ class AdminServiceAdapter(AbstractAdapter):
         except AdminNotFoundException as e:
             raise NotFound(e.args[0])
 
-    async def get_list(self, filters: Optional[Dict[str, str]]) -> List[Optional[Dict[str, str]]]:
+    async def get_list(
+        self, filters: Optional[Dict[str, str]]
+    ) -> List[Optional[Dict[str, str]]]:
         try:
             admin_list = await self.service.get_list(filters)
         except InternalError:

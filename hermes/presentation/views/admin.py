@@ -1,14 +1,14 @@
-from typing import Union, List, Dict
+from typing import Dict, List, Union
 
 from sanic.request import Request
-from sanic.views import HTTPMethodView
 from sanic.response import json
-
-from hermes.repositories.connections import MySQLConnection, RedisConnection
-from hermes.repositories.external_service import ExternalService, GatewayConnection
+from sanic.views import HTTPMethodView
 
 from hermes.adapters.repositories.admin import AdminRepositoryAdapter
 from hermes.adapters.services.admin import AdminServiceAdapter
+from hermes.repositories.connections import MySQLConnection, RedisConnection
+from hermes.repositories.external_service import (ExternalService,
+                                                  GatewayConnection)
 
 
 def _security_filter(admin_data: Union[List, Dict]):
@@ -30,9 +30,7 @@ class AdminView(HTTPMethodView):
 
         await self.service.create(admin_data)
 
-        return json({
-            "msg": "successfully created"
-        }, 201)
+        return json({"msg": "successfully created"}, 201)
 
 
 class AdminBatchView(HTTPMethodView):
@@ -67,13 +65,9 @@ class AdminDetailView(HTTPMethodView):
 
         await self.service.patch(admin_id, patch_data)
 
-        return json({
-            "msg": "Successfully patched"
-        }, 200)
+        return json({"msg": "Successfully patched"}, 200)
 
     async def delete(self, request: Request, admin_id: str):
         await self.service.delete(admin_id)
 
-        return json({
-            "msg": "Successfully deleted"
-        }, 200)
+        return json({"msg": "Successfully deleted"}, 200)

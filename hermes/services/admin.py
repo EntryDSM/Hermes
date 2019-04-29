@@ -1,4 +1,4 @@
-from typing import Optional, List, Dict, Any
+from typing import Any, Dict, List, Optional
 
 from hermes.adapters.repositories.admin import AdminRepositoryAdapter
 from hermes.entities.admin import Admin
@@ -6,7 +6,9 @@ from hermes.repositories.external_service import ExternalService
 
 
 class AdminService:
-    def __init__(self, repository: AdminRepositoryAdapter, external_service_api: ExternalService):
+    def __init__(
+        self, repository: AdminRepositoryAdapter, external_service_api: ExternalService
+    ):
         self.repository: AdminRepositoryAdapter = repository
         self.external_service: ExternalService = external_service_api
 

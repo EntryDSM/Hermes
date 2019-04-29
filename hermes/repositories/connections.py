@@ -1,35 +1,41 @@
-from typing import List, Dict, Any, Optional
+import json
 from abc import ABC, abstractmethod
+from typing import Any, Dict, List
 
 import aiomysql
 import aioredis
-import json
 
 
 class DBConnection(ABC):
     @classmethod
     @abstractmethod
-    async def initialize(cls, connection_info): ...
+    async def initialize(cls, connection_info):
+        ...
 
     @classmethod
     @abstractmethod
-    async def destroy(cls): ...
+    async def destroy(cls):
+        ...
 
     @classmethod
     @abstractmethod
-    async def execute(cls, query: str, *args) -> int: ...
+    async def execute(cls, query: str, *args) -> int:
+        ...
 
     @classmethod
     @abstractmethod
-    async def executemany(cls, query: str, *args) -> int: ...
+    async def executemany(cls, query: str, *args) -> int:
+        ...
 
     @classmethod
     @abstractmethod
-    async def fetch(cls, query: str, *args) -> List[Dict[str, Any]]: ...
+    async def fetch(cls, query: str, *args) -> List[Dict[str, Any]]:
+        ...
 
     @classmethod
     @abstractmethod
-    async def fetchone(cls, query: str, *args) -> Dict[str, Any]: ...
+    async def fetchone(cls, query: str, *args) -> Dict[str, Any]:
+        ...
 
 
 class MySQLConnection(DBConnection):
@@ -55,7 +61,7 @@ class MySQLConnection(DBConnection):
 
     @classmethod
     async def _get_read_pool(cls, read_connection_info=None) -> aiomysql.Pool:
-        if cls.__read_pool and not cls.__read_pool._closed:
+        if cls.__read_pool and not cls.__read_pool._closed:  # pylint: disable=protected-access
             return cls.__read_pool
 
         cls.__read_pool = await aiomysql.create_pool(**read_connection_info)
@@ -64,7 +70,7 @@ class MySQLConnection(DBConnection):
 
     @classmethod
     async def _get_write_pool(cls, write_connection_info=None) -> aiomysql.Pool:
-        if cls.__write_pool and not cls.__write_pool._closed:
+        if cls.__write_pool and not cls.__write_pool._closed:  # pylint: disable=protected-access
             return cls.__write_pool
 
         cls.__write_pool = await aiomysql.create_pool(**write_connection_info)
@@ -129,23 +135,28 @@ class MySQLConnection(DBConnection):
 class CacheConnection(ABC):
     @classmethod
     @abstractmethod
-    async def initialize(cls, connection_info): ...
+    async def initialize(cls, connection_info):
+        ...
 
     @classmethod
     @abstractmethod
-    async def destroy(cls): ...
+    async def destroy(cls):
+        ...
 
     @classmethod
     @abstractmethod
-    async def set(cls, key: str, value: Dict[str, Any]) -> None: ...
+    async def set(cls, key: str, value: Dict[str, Any]) -> None:
+        ...
 
     @classmethod
     @abstractmethod
-    async def get(cls, key: str) -> Dict[str, Any]: ...
+    async def get(cls, key: str) -> Dict[str, Any]:
+        ...
 
     @classmethod
     @abstractmethod
-    async def delete(cls, key: str) -> None: ...
+    async def delete(cls, key: str) -> None:
+        ...
 
 
 class RedisConnection(CacheConnection):
@@ -170,11 +181,11 @@ class RedisConnection(CacheConnection):
 
     @classmethod
     async def set(cls, key: str, value: Dict[str, Any]) -> None:
-        value = json.dumps(value)
-        await cls.redis.set(key, value)
+        dumped_value = json.dumps(value)
+        await cls.redis.set(key, dumped_value)
 
     @classmethod
-    async def get(cls, key: str) -> Optional[Dict[str, Any]]:
+    async def get(cls, key: str) -> Dict[str, Any]:
         value = await cls.redis.get(key)
         value = json.loads(value) if value else None
 

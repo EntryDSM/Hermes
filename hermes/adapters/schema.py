@@ -1,9 +1,11 @@
 import re
-from typing import List, Any
+from typing import Any, List
 
-from marshmallow import Schema as BaseSchema, EXCLUDE
-from marshmallow.fields import Email, Date, Integer, Boolean, String as BaseString
+from marshmallow import EXCLUDE
+from marshmallow import Schema as BaseSchema
 from marshmallow import post_load
+from marshmallow.fields import Boolean, Date, Email, Integer
+from marshmallow.fields import String as BaseString
 
 from hermes.entities.admin import Admin
 from hermes.entities.applicant import Applicant, ApplicantStatus
@@ -12,7 +14,11 @@ from hermes.entities.applicant import Applicant, ApplicantStatus
 class String(BaseString):
     def __init__(self, length=None, regex=None, **kwargs):
         length_validation = (lambda s: len(s) <= length) if length else (lambda s: True)
-        validation = (lambda s: re.match(regex, s) and length_validation(s)) if regex else length_validation
+        validation = (
+            (lambda s: re.match(regex, s) and length_validation(s))
+            if regex
+            else length_validation
+        )
         super().__init__(validate=validation, **kwargs)
 
 
@@ -38,7 +44,9 @@ class AdminSchema(Schema):
 
     admin_id = String(required=True, allow_none=False, length=45)
     admin_password = String(required=True, allow_none=False, length=13)
-    admin_type = Enum(required=True, allow_none=False, enum=['ROOT', 'ADMIN', 'INTERVIEW'])
+    admin_type = Enum(
+        required=True, allow_none=False, enum=["ROOT", "ADMIN", "INTERVIEW"]
+    )
     admin_email = Email(required=True, allow_none=False)
     admin_name = String(required=True, allow_none=False, length=13)
 
@@ -48,7 +56,9 @@ class AdminPatchSchema(Schema):
 
     admin_id = String(required=False, allow_none=False, length=45)
     admin_password = String(required=False, allow_none=False, length=13)
-    admin_type = Enum(required=False, allow_none=False, enum=['ROOT', 'ADMIN', 'INTERVIEW'])
+    admin_type = Enum(
+        required=False, allow_none=False, enum=["ROOT", "ADMIN", "INTERVIEW"]
+    )
     admin_email = Email(required=False, allow_none=False)
     admin_name = String(required=False, allow_none=False, length=13)
 
@@ -62,8 +72,8 @@ class ApplicantSchema(Schema):
     sex = Enum(missing=None, enum=["MALE", "FEMALE"])
     birth_date = Date(missing=None)
     parent_name = String(missing=None, length=13)
-    parent_tel = String(missing=None, regex=r'01\d-\d{3,4}-\d{4}')
-    applicant_tel = String(missing=None, regex=r'01\d-\d{3,4}-\d{4}')
+    parent_tel = String(missing=None, regex=r"01\d-\d{3,4}-\d{4}")
+    applicant_tel = String(missing=None, regex=r"01\d-\d{3,4}-\d{4}")
     address = String(missing=None, length=500)
     post_code = String(missing=None, length=5)
     image_path = String(missing=None, length=256)

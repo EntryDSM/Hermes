@@ -1,10 +1,10 @@
 import asyncio
 import datetime
-from typing import Callable, Dict, Type, Optional, List, Any
+from typing import Any, Callable, Dict, List, Optional, Type
 
 from werkzeug.security import generate_password_hash
 
-from hermes.repositories.connections import DBConnection, CacheConnection
+from hermes.repositories.connections import CacheConnection, DBConnection
 
 
 class AdminPersistentRepository:
@@ -21,11 +21,12 @@ class AdminPersistentRepository:
                     ) VALUES (%s, %s, %s, %s, %s)"""
 
         await self.connection.execute(
-            query, admin["admin_id"],
+            query,
+            admin["admin_id"],
             generate_password_hash(admin["admin_password"]),
             admin["admin_type"],
             admin["admin_email"],
-            admin["admin_name"]
+            admin["admin_name"],
         )
 
     async def delete(self, admin_id: str) -> None:
@@ -46,23 +47,35 @@ class AdminPersistentRepository:
         await asyncio.gather(*tasks)
 
     async def _patch_admin_type(self, admin_id: str, new_type: str) -> None:
-        query = "UPDATE admin SET admin_type = %s, updated_at = %s, WHERE admin_id = %s ;"
-        await self.connection.execute(query, new_type, datetime.datetime.now(), admin_id)
+        query = (
+            "UPDATE admin SET admin_type = %s, updated_at = %s, WHERE admin_id = %s ;"
+        )
+        await self.connection.execute(
+            query, new_type, datetime.datetime.now(), admin_id
+        )
 
     async def _patch_admin_name(self, admin_id: str, new_name: str) -> None:
-        query = "UPDATE admin SET admin_name = %s, updated_at = %s, WHERE admin_id = %s ;"
-        await self.connection.execute(query, new_name, datetime.datetime.now(), admin_id)
+        query = (
+            "UPDATE admin SET admin_name = %s, updated_at = %s, WHERE admin_id = %s ;"
+        )
+        await self.connection.execute(
+            query, new_name, datetime.datetime.now(), admin_id
+        )
 
     async def _patch_admin_email(self, admin_id: str, new_email: str) -> None:
-        query = "UPDATE admin SET admin_email = %s, updated_at = %s, WHERE admin_id = %s ;"
-        await self.connection.execute(query, new_email, datetime.datetime.now(), admin_id)
+        query = (
+            "UPDATE admin SET admin_email = %s, updated_at = %s, WHERE admin_id = %s ;"
+        )
+        await self.connection.execute(
+            query, new_email, datetime.datetime.now(), admin_id
+        )
 
-    async def get_list(self, filters: Optional[Dict[str, str]] = None) -> List[Dict[str, str]]:
+    async def get_list(self, filters: Dict[str, str] = None) -> List[Dict[str, str]]:
         query = "SELECT admin_id, admin_name, admin_password, admin_type, admin_email FROM admin "
 
-        if filters:
-            query += self._complete_where_statement(filters)
+        filters = {} if not filters else filters
 
+        query += self._complete_where_statement(filters)
         return await self.connection.fetch(query, *filters.values())
 
     @classmethod

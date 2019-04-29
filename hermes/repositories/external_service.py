@@ -20,4 +20,3 @@ class ExternalService:
     @staticmethod
     async def delete_tokens_from_gateway(consumer_id: str):
         pass
-
