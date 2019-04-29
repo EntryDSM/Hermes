@@ -74,8 +74,6 @@ class Setting:
         }
 
     DEBUG = False if RUN_ENV == "prod" else True
-    RUN_PORT = 8888
-    RUN_HOST = "0.0.0.0"
 
 
 settings = Setting(VaultClient())  # pylint: disable=invalid-name
