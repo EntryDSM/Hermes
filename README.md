@@ -1,4 +1,8 @@
 # Hermes
+![Python: 3.7](https://img.shields.io/badge/python-3.7-blue.svg)
+[![Code Style: Black](https://badgen.net/badge/code%20style/black/black)](https://github.com/ambv/black)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/186943feb6d546b18884e4548915f136)](https://app.codacy.com/app/NovemberOscar/Hermes?utm_source=github.com&utm_medium=referral&utm_content=EntryDSM/Hermes&utm_campaign=Badge_Grade_Dashboard)
+
 ![](https://seeklogo.com/images/H/Hermes-logo-C6741CE724-seeklogo.com.png)
 
 Handles all EntryDSM user(admin, applicant) related functions on the EntryDSM platform
@@ -9,13 +13,13 @@ By follow these instrucction, you can run hermes on the local for dev&test purpo
 
 ### configure pyenv
 
->> $ pyenv virtualenv 3.7.2 hermes
+> $ pyenv virtualenv 3.7.2 hermes
 
->> $ pyenv local hermes
+> $ pyenv local hermes
 
->> $ pip install -r requirements.txt
+> $ pip install -r requirements.txt
 
->> $ pip install -r requirements_dev.txt
+> $ pip install -r requirements_dev.txt
 
 ### Running
 
@@ -23,13 +27,13 @@ For run this, you must configure some environment variables.
 
 Let's configure. if you want to run in the pycharm, configure below environment variables to pycharm run setting. `Run/Debug Configurations > Environment Variables`
 
->> $ export VAULT_ADDR=vault.entrydsm.hs.kr
+> $ export VAULT_ADDR=vault.entrydsm.hs.kr
 
->> $ export GITHUB_TOKEN={{your read::org permission github token}}
+> $ export GITHUB_TOKEN={{your read::org permission github token}}
 
->> $ export SERVICE_NAME=hermes
+> $ export SERVICE_NAME=hermes
 
->> $ export RUN_ENV={{test or prod}}
+> $ export RUN_ENV={{test or prod}}
 
 ### Testing
 
@@ -39,7 +43,7 @@ For run the tests. you must install everything on `requirements_dev.txt` via pip
 
 after install every test requirements. just run this command.
 
->> $ pytest --cov=hermes
+> $ pytest --cov=hermes
 
 There's probably no problem.
  but if you get trouble, follow the below instructuons.
@@ -69,8 +73,9 @@ every configurations are in the  `pytest.ini`
 - Vault - Super secure secret backend
 
 ## Versioning
-> **{Major}.{Minor}.{Patch}**
-
+```
+{Major}.{Minor}.{Patch}
+```
 ex: 0.2.3
 
 - Major: without subcompatibility
