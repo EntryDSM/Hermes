@@ -16,7 +16,7 @@ class AdminRepositoryAdapter(AbstractAdapter):
     schema = AdminSchema()
 
     def __init__(
-        self, db_connection: Type[DBConnection], cache_connection: Type[CacheConnection]
+        self, db_connection: Type[DBConnection],
     ):
         self.persistence_repository = AdminPersistentRepository(db_connection)
         self.cache_repository = AdminCacheRepository(cache_connection)

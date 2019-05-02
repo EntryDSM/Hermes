@@ -7,8 +7,7 @@ from sanic.views import HTTPMethodView
 from hermes.adapters.repositories.admin import AdminRepositoryAdapter
 from hermes.adapters.services.admin import AdminServiceAdapter
 from hermes.repositories.connections import MySQLConnection, RedisConnection
-from hermes.repositories.external_service import (ExternalService,
-                                                  GatewayConnection)
+from hermes.repositories.external_service import GatewayConnection
 
 
 def _security_filter(admin_data: Union[List, Dict]):
@@ -20,10 +19,8 @@ def _security_filter(admin_data: Union[List, Dict]):
 
 
 class AdminView(HTTPMethodView):
-    repository = AdminRepositoryAdapter(MySQLConnection, RedisConnection)
-    external_service = ExternalService(GatewayConnection)
-
-    service = AdminServiceAdapter(repository, external_service)
+    repository = AdminRepositoryAdapter(MySQLConnection, RedisConnection, GatewayConnection)
+    service = AdminServiceAdapter(repository)
 
     async def post(self, request: Request):
         admin_data = request.json
@@ -34,10 +31,8 @@ class AdminView(HTTPMethodView):
 
 
 class AdminBatchView(HTTPMethodView):
-    repository = AdminRepositoryAdapter(MySQLConnection, RedisConnection)
-    external_service = ExternalService(GatewayConnection)
-
-    service = AdminServiceAdapter(repository, external_service)
+    repository = AdminRepositoryAdapter(MySQLConnection, RedisConnection, GatewayConnection)
+    service = AdminServiceAdapter(repository)
 
     async def get(self, request: Request):
         filters = request.args
@@ -49,10 +44,8 @@ class AdminBatchView(HTTPMethodView):
 
 
 class AdminDetailView(HTTPMethodView):
-    repository = AdminRepositoryAdapter(MySQLConnection, RedisConnection)
-    external_service = ExternalService(GatewayConnection)
-
-    service = AdminServiceAdapter(repository, external_service)
+    repository = AdminRepositoryAdapter(MySQLConnection, RedisConnection, GatewayConnection)
+    service = AdminServiceAdapter(repository)
 
     async def get(self, request: Request, admin_id: str):
         admin = await self.service.get_one(admin_id)

@@ -8,10 +8,12 @@ from hermes.adapters import AbstractAdapter
 from hermes.adapters.repositories.admin import AdminRepositoryAdapter
 from hermes.adapters.schema import AdminPatchSchema, AdminSchema, Schema
 from hermes.entities.admin import Admin
-from hermes.misc.exceptions import (AdminAlreadyExistException,
-                                    AdminNotFoundException, BadRequest,
-                                    Conflict)
-from hermes.repositories.external_service import ExternalService
+from hermes.misc.exceptions import (
+    AdminAlreadyExistException,
+    AdminNotFoundException,
+    BadRequest,
+    Conflict,
+)
 from hermes.services.admin import AdminService
 
 
@@ -19,10 +21,8 @@ class AdminServiceAdapter(AbstractAdapter):
     schema = AdminSchema()
     patch_schema = AdminPatchSchema()
 
-    def __init__(
-        self, repository: AdminRepositoryAdapter, external_service: ExternalService
-    ):
-        self.service = AdminService(repository, external_service)
+    def __init__(self, repository: AdminRepositoryAdapter):
+        self.service = AdminService(repository)
 
     async def create(self, admin_data: Dict[str, str]) -> None:
         try:
