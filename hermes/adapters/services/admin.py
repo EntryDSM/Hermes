@@ -53,7 +53,7 @@ class AdminServiceAdapter(AbstractAdapter):
             raise NotFound(e.args[0])
 
     async def get_list(
-        self, filters: Optional[Dict[str, str]]
+        self, filters: Optional[Dict[str, str]] = None
     ) -> List[Optional[Dict[str, str]]]:
         try:
             admin_list = await self.service.get_list(filters)
@@ -70,7 +70,7 @@ class AdminServiceAdapter(AbstractAdapter):
 
         return self._entity_to_data(self.schema, admin)
 
-    def _data_to_entity(self, schema: Schema, data: Dict[str, Any]) -> Dict[str, Any]:
+    def _data_to_entity(self, schema: Schema, data: Dict[str, Any]) -> Admin:
         return schema.load(data)
 
     def _entity_to_data(self, schema: Schema, entity: Admin) -> Dict[str, Any]:

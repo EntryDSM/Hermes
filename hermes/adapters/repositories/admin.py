@@ -1,4 +1,3 @@
-from dataclasses import asdict
 from typing import Any, Dict, List, Optional, Type
 
 from pymysql.err import IntegrityError
@@ -22,7 +21,9 @@ class AdminRepositoryAdapter(AbstractAdapter):
         self.persistence_repository = AdminPersistentRepository(db_connection)
         self.cache_repository = AdminCacheRepository(cache_connection)
 
-    async def save(self, admin: Dict[str, Any]):
+    async def save(self, admin: Admin):
+        admin = self._entity_to_data(self.schema, admin)
+
         try:
             await self.persistence_repository.save(admin)
         except IntegrityError:
@@ -33,7 +34,9 @@ class AdminRepositoryAdapter(AbstractAdapter):
         await self.persistence_repository.delete(admin_id)
         await self.cache_repository.delete(admin_id)
 
-    async def patch(self, admin_id: str, patch_data: Dict[str, str]):
+    async def patch(self, admin_id: str, patch_data: Admin):
+        patch_data = self._entity_to_data(self.schema, patch_data)
+
         await self.persistence_repository.patch(admin_id, patch_data)
         await self.cache_repository.delete(admin_id)
 
@@ -53,10 +56,8 @@ class AdminRepositoryAdapter(AbstractAdapter):
         await self.cache_repository.set(data)
         return self._data_to_entity(self.schema, data)
 
-    @classmethod
-    def _entity_to_data(cls, schema: Schema, entity: Admin) -> Dict[str, Any]:
-        return asdict(entity)
+    def _data_to_entity(self, schema: Schema, data: Dict[str, Any]) -> Admin:
+        return schema.load(data)
 
-    @classmethod
-    def _data_to_entity(cls, schema: Schema, data: Dict[str, Any]) -> Admin:
-        return Admin(**data)
+    def _entity_to_data(self, schema: Schema, entity: Admin) -> Dict[str, Any]:
+        return schema.dump(entity)
