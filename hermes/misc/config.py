@@ -2,8 +2,13 @@ from typing import Dict
 
 import hvac
 
-from hermes.misc.constants import (GITHUB_TOKEN, RUN_ENV, SERVICE_NAME,
-                                   VAULT_ADDRESS, VAULT_TOKEN)
+from hermes.misc.constants import (
+    GITHUB_TOKEN,
+    RUN_ENV,
+    SERVICE_NAME,
+    VAULT_ADDRESS,
+    VAULT_TOKEN,
+)
 
 
 class VaultClient:
