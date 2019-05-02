@@ -104,3 +104,6 @@ venv.bak/
 .mypy_cache/
 *.xml
 *.iml
+docs/.DS_Store
+.DS_Store
+.vscode/settings.json
