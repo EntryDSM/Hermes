@@ -39,8 +39,8 @@ class DBConnection(ABC):
 
 
 class MySQLConnection(DBConnection):
-    __read_pool: aiomysql.Pool = None
-    __write_pool: aiomysql.Pool = None
+    _read_pool: aiomysql.Pool = None
+    _write_pool: aiomysql.Pool = None
     _connection_info = None
 
     @classmethod
@@ -52,33 +52,33 @@ class MySQLConnection(DBConnection):
 
     @classmethod
     async def destroy(cls):
-        if cls.__read_pool is not None:
-            cls.__read_pool.close()
-            await cls.__read_pool.wait_closed()
-        if cls.__write_pool is not None:
-            cls.__write_pool.close()
-            await cls.__write_pool.wait_closed()
+        if cls._read_pool is not None:
+            cls._read_pool.close()
+            await cls._read_pool.wait_closed()
+        if cls._write_pool is not None:
+            cls._write_pool.close()
+            await cls._write_pool.wait_closed()
 
-        MySQLConnection.__read_pool = None
-        MySQLConnection.__write_pool = None
+        MySQLConnection._read_pool = None
+        MySQLConnection._write_pool = None
 
     @classmethod
     async def _get_read_pool(cls) -> aiomysql.Pool:
-        if cls.__read_pool and not cls.__read_pool._closed:  # pylint: disable=protected-access
-            return cls.__read_pool
+        if cls._read_pool and not cls._read_pool._closed:  # pylint: disable=protected-access
+            return cls._read_pool
 
-        cls.__read_pool = await aiomysql.create_pool(**cls._connection_info)
+        cls._read_pool = await aiomysql.create_pool(**cls._connection_info)
 
-        return cls.__read_pool
+        return cls._read_pool
 
     @classmethod
     async def _get_write_pool(cls) -> aiomysql.Pool:
-        if cls.__write_pool and not cls.__write_pool._closed:  # pylint: disable=protected-access
-            return cls.__write_pool
+        if cls._write_pool and not cls._write_pool._closed:  # pylint: disable=protected-access
+            return cls._write_pool
 
-        cls.__write_pool = await aiomysql.create_pool(**cls._connection_info)
+        cls._write_pool = await aiomysql.create_pool(**cls._connection_info)
 
-        return cls.__write_pool
+        return cls._write_pool
 
     @classmethod
     async def execute(cls, query: str, *args) -> int:
