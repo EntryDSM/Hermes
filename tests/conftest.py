@@ -6,7 +6,7 @@ from hermes.repositories.connections import MySQLConnection, RedisConnection
 
 
 @pytest.fixture(scope="function")
-async def mysql_manage(mysql_proc):
+async def mysql_manage(mysql, mysql_proc):
     conn_info = {
         "use_unicode": True,
         "charset": "utf8mb4",
