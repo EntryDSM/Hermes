@@ -6,7 +6,7 @@ from hermes.repositories.connections import MySQLConnection, RedisConnection
 
 
 @pytest.fixture(scope="function")
-async def mysql_connection(mysql, mysql_proc):
+async def mysql_manage(mysql, mysql_proc):
     conn_info = {
         "use_unicode": True,
         "charset": "utf8mb4",
@@ -18,14 +18,12 @@ async def mysql_connection(mysql, mysql_proc):
         "autocommit": True,
     }
     await MySQLConnection.initialize(conn_info)
-
-    yield MySQLConnection
-
+    yield
     await MySQLConnection.destroy()
 
 
 @pytest.fixture(scope="function")
-async def cache_connection(redis_proc):
+async def cache_manage(redis_proc):
     conn_info = {
         "address": f"redis://:@{redis_proc.host}:{redis_proc.port}",
         "minsize": 5,
@@ -33,9 +31,7 @@ async def cache_connection(redis_proc):
     }
     await RedisConnection.initialize(conn_info)
     await RedisConnection.flush_all()
-
-    yield RedisConnection
-
+    yield
     await RedisConnection.destroy()
 
 
