@@ -22,6 +22,26 @@ async def initialize(app, loop):
     logger.info("Initialize complete")
     # enable for production
 
+async def migrate(app, loop):
+    if not MySQLConnection.is_available:
+        raise Exception("Database connection is unavailable, Make sure initialize connection!")
+
+    await MySQLConnection.execute("""
+            create table if not exists admin
+            (
+              admin_id       varchar(45)                                  not null
+                primary key,
+              admin_password varchar(100)                                 not null,
+              admin_type     enum ('ROOT', 'ADMINISTRATION', 'INTERVIEW') not null,
+              admin_email    varchar(320)                                 not null,
+              admin_name     varchar(13)                                  not null,
+              created_at     timestamp default CURRENT_TIMESTAMP          not null,
+              updated_at     timestamp default CURRENT_TIMESTAMP          not null
+            ) character set utf8mb4;
+    """)
+
+    logger.info("Database migration complete")
+
 
 async def release(app, loop):
     await MySQLConnection.destroy()
