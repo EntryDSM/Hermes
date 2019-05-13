@@ -70,3 +70,40 @@ def test_cli(loop, hermes_app, sanic_client):
     return loop.run_until_complete(sanic_client(hermes_app, protocol=WebSocketProtocol))
 
 
+@pytest.fixture(scope="function")
+def admin_dummy_set():
+    admins = (
+        [create_admin_dummy_object(0, "ROOT")]
+        + [create_admin_dummy_object(i, "ADMINISTRATION") for i in range(1, 5)]
+        + [create_admin_dummy_object(i, "INTERVIEW") for i in range(5, 10)]
+    )
+
+    return admins
+
+
+@pytest.fixture(scope="function")
+async def save_admin_dummy_to_db(admin_dummy_set):
+
+    await save_admins(admin_dummy_set)
+
+
+@pytest.fixture(scope="function")
+async def save_admin_dummy_to_cache(admin_dummy_set):
+    for admin in admin_dummy_set:
+        await RedisConnection.set(f"hermes:admin:{admin.admin_id}", asdict(admin))
+
+    return
+
+
+@pytest.fixture(scope="function")
+async def admin_persistent_repo():
+    repo = AdminPersistentRepository(MySQLConnection)
+
+    return repo
+
+
+@pytest.fixture(scope="function")
+async def admin_cache_repo():
+    repo = AdminCacheRepository(RedisConnection)
+
+    return repo
