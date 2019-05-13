@@ -44,7 +44,7 @@ async def cache_manage(redisdb, redis_proc):
 
 
 @pytest.yield_fixture(scope="function")
-async def hermes_app(mysql_proc, mysql, redis_proc):
+async def hermes_app(mysql_proc, mysql, redis_proc, redisdb):
     _app = create_app()
 
     _app.database_connection_info = {
