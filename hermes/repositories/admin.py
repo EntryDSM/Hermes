@@ -38,7 +38,7 @@ class AdminPersistentRepository:
     async def patch(self, admin_id: str, patch_data: Dict[str, Any]) -> None:
         tasks = list()
 
-        for k, v in patch_data:
+        for k, v in patch_data.items():
             task: Callable = self.__getattribute__(f"_patch_{k}")
 
             if task:
@@ -48,7 +48,7 @@ class AdminPersistentRepository:
 
     async def _patch_admin_type(self, admin_id: str, new_type: str) -> None:
         query = (
-            "UPDATE admin SET admin_type = %s, updated_at = %s, WHERE admin_id = %s ;"
+            "UPDATE admin SET admin_type = %s, updated_at = %s WHERE admin_id = %s ;"
         )
         await self.connection.execute(
             query, new_type, datetime.datetime.now(), admin_id
@@ -56,7 +56,7 @@ class AdminPersistentRepository:
 
     async def _patch_admin_name(self, admin_id: str, new_name: str) -> None:
         query = (
-            "UPDATE admin SET admin_name = %s, updated_at = %s, WHERE admin_id = %s ;"
+            "UPDATE admin SET admin_name = %s, updated_at = %s WHERE admin_id = %s ;"
         )
         await self.connection.execute(
             query, new_name, datetime.datetime.now(), admin_id
@@ -64,7 +64,7 @@ class AdminPersistentRepository:
 
     async def _patch_admin_email(self, admin_id: str, new_email: str) -> None:
         query = (
-            "UPDATE admin SET admin_email = %s, updated_at = %s, WHERE admin_id = %s ;"
+            "UPDATE admin SET admin_email = %s, updated_at = %s WHERE admin_id = %s ;"
         )
         await self.connection.execute(
             query, new_email, datetime.datetime.now(), admin_id
