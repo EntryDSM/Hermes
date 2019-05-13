@@ -25,12 +25,13 @@ async def mysql_manage(mysql, mysql_proc):
         "autocommit": True,
     }
     await MySQLConnection.initialize(conn_info)
+    await create_admin_table(MySQLConnection)
     yield
     await MySQLConnection.destroy()
 
 
 @pytest.fixture(scope="function")
-async def cache_manage(redis_proc):
+async def cache_manage(redisdb, redis_proc):
     conn_info = {
         "address": f"redis://:@{redis_proc.host}:{redis_proc.port}",
         "minsize": 5,
