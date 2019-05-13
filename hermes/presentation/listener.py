@@ -19,8 +19,9 @@ async def initialize(app, loop):
 
     await MySQLConnection.initialize(database_connection_info)
     await RedisConnection.initialize(cache_connection_info)
-    logger.info("Initialize complete")
-    # enable for production
+
+    logger.info("Connection initialize complete")
+
 
 async def migrate(app, loop):
     if not MySQLConnection.is_available:
@@ -45,3 +46,6 @@ async def migrate(app, loop):
 
 async def release(app, loop):
     await MySQLConnection.destroy()
+    await RedisConnection.destroy()
+
+    # All connections must be destroyed before teardown!
