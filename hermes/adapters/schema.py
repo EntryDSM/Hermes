@@ -43,9 +43,9 @@ class AdminSchema(Schema):
     __entity__ = Admin
 
     admin_id = String(required=True, allow_none=False, length=45)
-    admin_password = String(required=True, allow_none=False, length=13)
+    admin_password = String(required=True, allow_none=False, length=93)
     admin_type = Enum(
-        required=True, allow_none=False, enum=["ROOT", "ADMIN", "INTERVIEW"]
+        required=True, allow_none=False, enum=["ROOT", "ADMINISTRATION", "INTERVIEW"]
     )
     admin_email = Email(required=True, allow_none=False)
     admin_name = String(required=True, allow_none=False, length=13)
@@ -55,7 +55,7 @@ class AdminPatchSchema(Schema):
     __entity__ = Admin
 
     admin_id = String(required=False, allow_none=False, length=45)
-    admin_password = String(required=False, allow_none=False, length=13)
+    admin_password = String(required=False, allow_none=False, length=93)
     admin_type = Enum(
         required=False, allow_none=False, enum=["ROOT", "ADMIN", "INTERVIEW"]
     )
@@ -67,7 +67,7 @@ class ApplicantSchema(Schema):
     __entity__ = Applicant
 
     email = Email(required=True, allow_none=False)
-    password = String(required=True, allow_none=False, length=320)
+    password = String(required=True, allow_none=False, length=93)
     applicant_name = String(missing=None, length=13)
     sex = Enum(missing=None, enum=["MALE", "FEMALE"])
     birth_date = Date(missing=None)

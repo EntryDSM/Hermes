@@ -1,7 +1,6 @@
 from sanic import Blueprint
 
-from hermes.presentation.views.admin import (AdminBatchView, AdminDetailView,
-                                             AdminView)
+from hermes.presentation.views.admin import AdminBatchView, AdminDetailView, AdminView
 
 # from hermes_v2.presentation.views.applicant import (UserView, UserInfoView,
 #                                                     UserStatusView, UserBatchView)

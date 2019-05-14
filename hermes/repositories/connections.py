@@ -43,6 +43,8 @@ class MySQLConnection(DBConnection):
     __write_pool: aiomysql.Pool = None
     _connection_info = None
 
+    is_available = not(__read_pool and __write_pool)
+
     @classmethod
     async def initialize(cls, connection_info):
         cls._connection_info = connection_info
@@ -59,8 +61,8 @@ class MySQLConnection(DBConnection):
             cls.__write_pool.close()
             await cls.__write_pool.wait_closed()
 
-        MySQLConnection.__read_pool = None
-        MySQLConnection.__write_pool = None
+        cls.__read_pool = None
+        cls.__write_pool = None
 
     @classmethod
     async def _get_read_pool(cls) -> aiomysql.Pool:

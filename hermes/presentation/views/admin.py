@@ -19,7 +19,9 @@ def _security_filter(admin_data: Union[List, Dict]):
 
 
 class AdminView(HTTPMethodView):
-    repository = AdminRepositoryAdapter(MySQLConnection, RedisConnection, GatewayConnection)
+    repository = AdminRepositoryAdapter(
+        MySQLConnection, RedisConnection, GatewayConnection
+    )
     service = AdminServiceAdapter(repository)
 
     async def post(self, request: Request):
@@ -31,7 +33,9 @@ class AdminView(HTTPMethodView):
 
 
 class AdminBatchView(HTTPMethodView):
-    repository = AdminRepositoryAdapter(MySQLConnection, RedisConnection, GatewayConnection)
+    repository = AdminRepositoryAdapter(
+        MySQLConnection, RedisConnection, GatewayConnection
+    )
     service = AdminServiceAdapter(repository)
 
     async def get(self, request: Request):
@@ -44,7 +48,9 @@ class AdminBatchView(HTTPMethodView):
 
 
 class AdminDetailView(HTTPMethodView):
-    repository = AdminRepositoryAdapter(MySQLConnection, RedisConnection, GatewayConnection)
+    repository = AdminRepositoryAdapter(
+        MySQLConnection, RedisConnection, GatewayConnection
+    )
     service = AdminServiceAdapter(repository)
 
     async def get(self, request: Request, admin_id: str):
