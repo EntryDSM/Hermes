@@ -56,3 +56,14 @@ async def test_admin_cache_repo_set(cache_manage, admin_cache_repo, admin_dummy_
 
     await repo.set(test_data)
 
+
+@pytest.mark.asyncio
+async def test_admin_cache_repo_get(
+    cache_manage, admin_cache_repo, save_admin_dummy_to_cache
+):
+    repo = admin_cache_repo
+
+    for i in range(0, 10):
+        result = await repo.get(generate_admin_id(i))
+        assert generate_admin_id(i) == result["admin_id"]
+
