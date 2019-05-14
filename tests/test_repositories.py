@@ -48,3 +48,11 @@ async def test_admin_persistent_repo_delete(
 
     await repo.delete(generate_admin_id(0))
 
+
+@pytest.mark.asyncio
+async def test_admin_cache_repo_set(cache_manage, admin_cache_repo, admin_dummy_set):
+    repo = admin_cache_repo
+    test_data = asdict(admin_dummy_set[0])
+
+    await repo.set(test_data)
+
