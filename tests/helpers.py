@@ -108,7 +108,6 @@ def admin_batch_response(length):
     responses = [
         {
             "admin_id": DunnoValue(str),
-            "admin_password": DunnoValue(str),
             "admin_type": DunnoValue(str),
             "admin_email": DunnoValue(str),
             "admin_name": DunnoValue(str),
