@@ -102,3 +102,71 @@ def admin_batch_view_test_data():
 
     return test_set
 
+
+def admin_detail_view_test_data():
+    test_set = [
+        generate_endpoint_test_data(
+            method='GET',
+            endpoint=f"/api/v1/admin/{generate_admin_id(0)}",
+            query_param={},
+            request_body={},
+            expected_response_status=200,
+            expected_response_body=admin_detail_response(0)
+        ),
+        generate_endpoint_test_data(
+            method='GET',
+            endpoint=f"/api/v1/admin/fakeAdminId",
+            query_param={},
+            request_body={},
+            expected_response_status=404,
+            expected_response_body=status_message_response()
+        ),
+        generate_endpoint_test_data(
+            method='PATCH',
+            endpoint=f"/api/v1/admin/{generate_admin_id(0)}",
+            query_param={},
+            request_body={
+                "admin_type": "INTERVIEW"
+            },
+            expected_response_status=200,
+            expected_response_body=status_message_response()
+        ),
+        generate_endpoint_test_data(
+            method='PATCH',
+            endpoint=f"/api/v1/admin/{generate_admin_id(0)}",
+            query_param={},
+            request_body={
+                "admin_asdf": "something"
+            },
+            expected_response_status=400,
+            expected_response_body=status_message_response()
+        ),
+        generate_endpoint_test_data(
+            method='PATCH',
+            endpoint=f"/api/v1/admin/xxx",
+            query_param={},
+            request_body={
+                "admin_type": "INTERVIEW"
+            },
+            expected_response_status=404,
+            expected_response_body=status_message_response()
+        ),
+        generate_endpoint_test_data(
+            method='DELETE',
+            endpoint=f"/api/v1/admin/{generate_admin_id(0)}",
+            query_param={},
+            request_body={},
+            expected_response_status=200,
+            expected_response_body=status_message_response()
+        ),
+        generate_endpoint_test_data(
+            method='DELETE',
+            endpoint=f"/api/v1/admin/xxx",
+            query_param={},
+            request_body={},
+            expected_response_status=200,
+            expected_response_body=status_message_response()
+        )
+    ]
+
+    return test_set
