@@ -23,7 +23,7 @@ async def test_db_connection_interface(db_method, mysql_manage):
         ("set", {"key": "x", "value": {"y": 0}}),
         ("get", {"key": "x"}),
         ("delete", {"key": "x"}),
-        ("flush_all", {})
+        ("flush_all", {}),
     ],
 )
 async def test_cache_connection_interface(cache_method, param, cache_manage):

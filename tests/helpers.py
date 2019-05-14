@@ -128,9 +128,7 @@ def admin_detail_response(index):
 
 
 def status_message_response():
-    return {
-        "msg": DunnoValue(str)
-    }
+    return {"msg": DunnoValue(str)}
 
 
 async def save_admins(admin_dummy_set):

@@ -4,8 +4,7 @@ from typing import Any, Dict, Union, Tuple, List, Type
 
 from marshmallow import Schema
 
-from hermes.adapters.schema import (AdminSchema, ApplicantSchema,
-                                    ApplicantStatusSchema)
+from hermes.adapters.schema import AdminSchema, ApplicantSchema, ApplicantStatusSchema
 
 EXPECTED_SUCCESS = True
 EXPECTED_FAIL = False

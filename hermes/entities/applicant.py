@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date
 
 
 @dataclass
@@ -8,7 +8,7 @@ class Applicant:
     password: str
     applicant_name: str
     sex: str
-    birth_date: datetime.date
+    birth_date: date
     parent_name: str
     parent_tel: str
     applicant_tel: str
