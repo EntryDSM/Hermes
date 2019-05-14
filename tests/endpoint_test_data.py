@@ -55,3 +55,50 @@ def admin_view_test_data():
 
     return test_set
 
+
+def admin_batch_view_test_data():
+    test_set = [
+        generate_endpoint_test_data(
+            method="GET",
+            endpoint="/api/v1/admin/batch",
+            query_param={},
+            request_body={},
+            expected_response_status=200,
+            expected_response_body=admin_batch_response(10),
+        ),
+        generate_endpoint_test_data(
+            method="GET",
+            endpoint="/api/v1/admin/batch",
+            query_param={"admin_id": generate_admin_id(0)},
+            request_body={},
+            expected_response_status=200,
+            expected_response_body=admin_batch_response(1),
+        ),
+        generate_endpoint_test_data(
+            method="GET",
+            endpoint="/api/v1/admin/batch",
+            query_param={"admin_type": "INTERVIEW"},
+            request_body={},
+            expected_response_status=200,
+            expected_response_body=admin_batch_response(5),
+        ),
+        generate_endpoint_test_data(
+            method="GET",
+            endpoint="/api/v1/admin/batch",
+            query_param={"admin_email": generate_admin_email(0)},
+            request_body={},
+            expected_response_status=200,
+            expected_response_body=admin_batch_response(1),
+        ),
+        generate_endpoint_test_data(
+            method="GET",
+            endpoint="/api/v1/admin/batch",
+            query_param={"admin_eml": "asdf"},
+            request_body={},
+            expected_response_status=400,
+            expected_response_body=status_message_response(),
+        ),
+    ]
+
+    return test_set
+
