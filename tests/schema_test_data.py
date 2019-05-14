@@ -337,3 +337,132 @@ class ApplicantSchemaTestData(SchemaTestData):
         ),
     ]
 
+
+class ApplicantStatusSchemaTestData(SchemaTestData):
+    schema = ApplicantStatusSchema
+
+    VALID_APPLICANT_EMAIL = "applicant@dsm.hs.kr"
+    VALID_RECEIPT_CODE = 1
+    VALID_IS_PAID = [True, False]
+    VALID_IS_PRINTED_APPLICATION_ARRIVED = [True, False]  # pylint: disable=invalid-name
+    VALID_IS_PASSED_FIRST_APPLY = [True, False]
+    VALID_IS_FINAL_SUBMIT = [True, False]
+    VALID_EXAM_CODE = "100001"
+
+    INVALID_APPLICANT_EMAIL = "applicant@dsm.hs.kr"
+    INVALID_RECEIPT_CODE = "A"
+    INVALID_IS_PAID = ["TrUe", "faLsE"]
+    INVALID_IS_PRINTED_APPLICATION_ARRIVED = [
+        "TrUe",
+        "faLsE",
+    ]  # pylint: disable=invalid-name
+    INVALID_IS_PASSED_FIRST_APPLY = ["TrUe", "faLsE"]  # pylint: disable=invalid-name
+    INVALID_IS_FINAL_SUBMIT = ["TrUe", "faLsE"]
+    INVALID_EXAM_CODE = True
+
+    schema_test_set = [
+        (
+            {
+                "applicant_email": VALID_APPLICANT_EMAIL,
+                "receipt_code": VALID_RECEIPT_CODE,
+                "is_paid": random.choice(VALID_IS_PAID),
+                "is_printed_application_arrived": random.choice(
+                    VALID_IS_PRINTED_APPLICATION_ARRIVED
+                ),
+                "is_passed_first_apply": random.choice(VALID_IS_PASSED_FIRST_APPLY),
+                "is_final_submit": random.choice(VALID_IS_FINAL_SUBMIT),
+                "exam_code": VALID_EXAM_CODE,
+            },
+            EXPECTED_SUCCESS,
+        ),
+        # receipt_code validation failure case
+        (
+            {
+                "applicant_email": VALID_APPLICANT_EMAIL,
+                "receipt_code": INVALID_RECEIPT_CODE,
+                "is_paid": random.choice(VALID_IS_PAID),
+                "is_printed_application_arrived": random.choice(
+                    VALID_IS_PRINTED_APPLICATION_ARRIVED
+                ),
+                "is_passed_first_apply": random.choice(VALID_IS_PASSED_FIRST_APPLY),
+                "is_final_submit": random.choice(VALID_IS_FINAL_SUBMIT),
+                "exam_code": VALID_EXAM_CODE,
+            },
+            EXPECTED_FAIL,
+        ),
+        # is_paid validation failure case
+        (
+            {
+                "applicant_email": VALID_APPLICANT_EMAIL,
+                "receipt_code": VALID_RECEIPT_CODE,
+                "is_paid": random.choice(INVALID_IS_PAID),
+                "is_printed_application_arrived": random.choice(
+                    VALID_IS_PRINTED_APPLICATION_ARRIVED
+                ),
+                "is_passed_first_apply": random.choice(VALID_IS_PASSED_FIRST_APPLY),
+                "is_final_submit": random.choice(VALID_IS_FINAL_SUBMIT),
+                "exam_code": VALID_EXAM_CODE,
+            },
+            EXPECTED_FAIL,
+        ),
+        # is_printed... validation failure case
+        (
+            {
+                "applicant_email": VALID_APPLICANT_EMAIL,
+                "receipt_code": VALID_RECEIPT_CODE,
+                "is_paid": random.choice(VALID_IS_PAID),
+                "is_printed_application_arrived": random.choice(
+                    INVALID_IS_PRINTED_APPLICATION_ARRIVED
+                ),
+                "is_passed_first_apply": random.choice(VALID_IS_PASSED_FIRST_APPLY),
+                "is_final_submit": random.choice(VALID_IS_FINAL_SUBMIT),
+                "exam_code": VALID_EXAM_CODE,
+            },
+            EXPECTED_FAIL,
+        ),
+        # is_passed... validation failure case
+        (
+            {
+                "applicant_email": VALID_APPLICANT_EMAIL,
+                "receipt_code": VALID_RECEIPT_CODE,
+                "is_paid": random.choice(VALID_IS_PAID),
+                "is_printed_application_arrived": random.choice(
+                    VALID_IS_PRINTED_APPLICATION_ARRIVED
+                ),
+                "is_passed_first_apply": random.choice(INVALID_IS_PASSED_FIRST_APPLY),
+                "is_final_submit": random.choice(VALID_IS_FINAL_SUBMIT),
+                "exam_code": VALID_EXAM_CODE,
+            },
+            EXPECTED_FAIL,
+        ),
+        # is_final_submit validation failure case
+        (
+            {
+                "applicant_email": VALID_APPLICANT_EMAIL,
+                "receipt_code": VALID_RECEIPT_CODE,
+                "is_paid": random.choice(VALID_IS_PAID),
+                "is_printed_application_arrived": random.choice(
+                    VALID_IS_PRINTED_APPLICATION_ARRIVED
+                ),
+                "is_passed_first_apply": random.choice(VALID_IS_PASSED_FIRST_APPLY),
+                "is_final_submit": random.choice(INVALID_IS_FINAL_SUBMIT),
+                "exam_code": VALID_EXAM_CODE,
+            },
+            EXPECTED_FAIL,
+        ),
+        # exam_code validation failure case
+        (
+            {
+                "applicant_email": VALID_APPLICANT_EMAIL,
+                "receipt_code": VALID_RECEIPT_CODE,
+                "is_paid": random.choice(VALID_IS_PAID),
+                "is_printed_application_arrived": random.choice(
+                    VALID_IS_PRINTED_APPLICATION_ARRIVED
+                ),
+                "is_passed_first_apply": random.choice(VALID_IS_PASSED_FIRST_APPLY),
+                "is_final_submit": random.choice(VALID_IS_FINAL_SUBMIT),
+                "exam_code": INVALID_EXAM_CODE,
+            },
+            EXPECTED_FAIL,
+        ),
+    ]
