@@ -118,6 +118,21 @@ def admin_batch_response(length):
     return responses
 
 
+def admin_detail_response(index):
+    return {
+        "admin_id": generate_admin_id(index),
+        "admin_type": DunnoValue(str),
+        "admin_email": generate_admin_email(index),
+        "admin_name": DunnoValue(str),
+    }
+
+
+def status_message_response():
+    return {
+        "msg": DunnoValue(str)
+    }
+
+
 async def save_admins(admin_dummy_set):
     for admin in admin_dummy_set:
         query = """INSERT INTO admin (
