@@ -67,3 +67,12 @@ async def test_admin_cache_repo_get(
         result = await repo.get(generate_admin_id(i))
         assert generate_admin_id(i) == result["admin_id"]
 
+
+@pytest.mark.asyncio
+async def test_admin_cache_repo_delete(
+    cache_manage, admin_cache_repo, save_admin_dummy_to_cache
+):
+    repo = admin_cache_repo
+
+    for i in range(0, 10):
+        await repo.delete(generate_admin_id(i))
