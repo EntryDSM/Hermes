@@ -103,3 +103,237 @@ class AdminSchemaTestData(SchemaTestData):
         ),
     ]
 
+
+class ApplicantSchemaTestData(SchemaTestData):
+    schema = ApplicantSchema
+
+    VALID_EMAIL = "applicant@dsm.hs.kr"
+    VALID_PW = "p@ssword"
+    VALID_APPLICANT_NAME = "홍길동"
+    VALID_SEX = ["MALE", "FEMALE"]
+    VALID_BIRTH_DATE = str(datetime.datetime.now().date())
+    VALID_PARENT_NAME = "홍판서"
+    VALID_PARENT_TEL = "010-1234-5678"
+    VALID_APPLICANT_TEL = "010-2345-3456"
+    VALID_ADDRESS = "서울시 강남구 봉은사로 22"
+    VALID_POST_CODE = "12312"
+    VALID_IMAGE_PATH = "/path/to/store/this.img"
+
+    INVALID_EMAIL = "applicant@somewhere"
+    INVALID_PW = "P" * 333
+    INVALID_APPLICANT_NAME = "홍" * 14
+    INVALID_SEX = ["MaLE", "FEEEMALE"]
+    INVALID_BIRTH_DATE = object
+    INVALID_PARENT_NAME = "판" * 13
+    INVALID_PARENT_TEL = "10-1235678"
+    INVALID_APPLICANT_TEL = "0345-3456"
+    INVALID_ADDRESS = "주" * 501
+    INVALID_POST_CODE = "1" * 6
+    INVALID_IMAGE_PATH = "PATH" * 65
+
+    schema_test_set = [
+        (
+            {
+                "email": VALID_EMAIL,
+                "password": VALID_PW[0],
+                "applicant_name": VALID_APPLICANT_NAME,
+                "sex": VALID_SEX[random.randint(0, 1)],
+                "birth_date": VALID_BIRTH_DATE,
+                "parent_name": VALID_PARENT_NAME,
+                "parent_tel": VALID_PARENT_TEL,
+                "applicant_tel": VALID_APPLICANT_TEL,
+                "address": VALID_ADDRESS,
+                "post_code": VALID_POST_CODE,
+                "image_path": VALID_IMAGE_PATH,
+            },
+            EXPECTED_SUCCESS,
+        ),
+        # email validation failure case
+        (
+            {
+                "email": INVALID_EMAIL,
+                "password": VALID_PW,
+                "applicant_name": VALID_APPLICANT_NAME,
+                "sex": VALID_SEX[random.randint(0, 1)],
+                "birth_date": VALID_BIRTH_DATE,
+                "parent_name": VALID_PARENT_NAME,
+                "parent_tel": VALID_PARENT_TEL,
+                "applicant_tel": VALID_APPLICANT_TEL,
+                "address": VALID_ADDRESS,
+                "post_code": VALID_POST_CODE,
+                "image_path": VALID_IMAGE_PATH,
+            },
+            EXPECTED_FAIL,
+        ),
+        # password validation failure case
+        (
+            {
+                "email": VALID_EMAIL,
+                "password": INVALID_PW,
+                "applicant_name": VALID_APPLICANT_NAME,
+                "sex": VALID_SEX[random.randint(0, 1)],
+                "birth_date": VALID_BIRTH_DATE,
+                "parent_name": VALID_PARENT_NAME,
+                "parent_tel": VALID_PARENT_TEL,
+                "applicant_tel": VALID_APPLICANT_TEL,
+                "address": VALID_ADDRESS,
+                "post_code": VALID_POST_CODE,
+                "image_path": VALID_IMAGE_PATH,
+            },
+            EXPECTED_FAIL,
+        ),
+        # applicant_name validation failure case
+        (
+            {
+                "email": VALID_EMAIL,
+                "password": VALID_PW,
+                "applicant_name": INVALID_APPLICANT_NAME,
+                "sex": VALID_SEX[random.randint(0, 1)],
+                "birth_date": VALID_BIRTH_DATE,
+                "parent_name": VALID_PARENT_NAME,
+                "parent_tel": VALID_PARENT_TEL,
+                "applicant_tel": VALID_APPLICANT_TEL,
+                "address": VALID_ADDRESS,
+                "post_code": VALID_POST_CODE,
+                "image_path": VALID_IMAGE_PATH,
+            },
+            EXPECTED_FAIL,
+        ),
+        # sex validation failure case
+        (
+            {
+                "email": VALID_EMAIL,
+                "password": VALID_PW,
+                "applicant_name": VALID_APPLICANT_NAME,
+                "sex": INVALID_SEX[random.randint(0, 1)],
+                "birth_date": VALID_BIRTH_DATE,
+                "parent_name": VALID_PARENT_NAME,
+                "parent_tel": VALID_PARENT_TEL,
+                "applicant_tel": VALID_APPLICANT_TEL,
+                "address": VALID_ADDRESS,
+                "post_code": VALID_POST_CODE,
+                "image_path": VALID_IMAGE_PATH,
+            },
+            EXPECTED_FAIL,
+        ),
+        # birth_date validation failure case
+        (
+            {
+                "email": VALID_EMAIL,
+                "password": VALID_PW,
+                "applicant_name": VALID_APPLICANT_NAME,
+                "sex": VALID_SEX[random.randint(0, 1)],
+                "birth_date": INVALID_BIRTH_DATE,
+                "parent_name": VALID_PARENT_NAME,
+                "parent_tel": VALID_PARENT_TEL,
+                "applicant_tel": VALID_APPLICANT_TEL,
+                "address": VALID_ADDRESS,
+                "post_code": VALID_POST_CODE,
+                "image_path": VALID_IMAGE_PATH,
+            },
+            EXPECTED_FAIL,
+        ),
+        # parent_name validation failure case
+        (
+            {
+                "email": VALID_EMAIL,
+                "password": VALID_PW,
+                "applicant_name": VALID_APPLICANT_NAME,
+                "sex": VALID_SEX[random.randint(0, 1)],
+                "birth_date": VALID_BIRTH_DATE,
+                "parent_name": INVALID_PARENT_NAME,
+                "parent_tel": VALID_PARENT_TEL,
+                "applicant_tel": VALID_APPLICANT_TEL,
+                "address": VALID_ADDRESS,
+                "post_code": VALID_POST_CODE,
+                "image_path": VALID_IMAGE_PATH,
+            },
+            EXPECTED_FAIL,
+        ),
+        # parent_tel validation failure case
+        (
+            {
+                "email": VALID_EMAIL,
+                "password": VALID_PW,
+                "applicant_name": VALID_APPLICANT_NAME,
+                "sex": VALID_SEX[random.randint(0, 1)],
+                "birth_date": VALID_BIRTH_DATE,
+                "parent_name": VALID_PARENT_NAME,
+                "parent_tel": INVALID_PARENT_TEL,
+                "applicant_tel": VALID_APPLICANT_TEL,
+                "address": VALID_ADDRESS,
+                "post_code": VALID_POST_CODE,
+                "image_path": VALID_IMAGE_PATH,
+            },
+            EXPECTED_FAIL,
+        ),
+        # applicant_tel validation failure case
+        (
+            {
+                "email": VALID_EMAIL,
+                "password": VALID_PW,
+                "applicant_name": VALID_APPLICANT_NAME,
+                "sex": VALID_SEX[random.randint(0, 1)],
+                "birth_date": VALID_BIRTH_DATE,
+                "parent_name": VALID_PARENT_NAME,
+                "parent_tel": VALID_PARENT_TEL,
+                "applicant_tel": INVALID_APPLICANT_TEL,
+                "address": VALID_ADDRESS,
+                "post_code": VALID_POST_CODE,
+                "image_path": VALID_IMAGE_PATH,
+            },
+            EXPECTED_FAIL,
+        ),
+        # address validation failure case
+        (
+            {
+                "email": VALID_EMAIL,
+                "password": VALID_PW,
+                "applicant_name": VALID_APPLICANT_NAME,
+                "sex": VALID_SEX[random.randint(0, 1)],
+                "birth_date": VALID_BIRTH_DATE,
+                "parent_name": VALID_PARENT_NAME,
+                "parent_tel": VALID_PARENT_TEL,
+                "applicant_tel": VALID_APPLICANT_TEL,
+                "address": INVALID_ADDRESS,
+                "post_code": VALID_POST_CODE,
+                "image_path": VALID_IMAGE_PATH,
+            },
+            EXPECTED_FAIL,
+        ),
+        # post_code validation failure case
+        (
+            {
+                "email": VALID_EMAIL,
+                "password": VALID_PW,
+                "applicant_name": VALID_APPLICANT_NAME,
+                "sex": VALID_SEX[random.randint(0, 1)],
+                "birth_date": VALID_BIRTH_DATE,
+                "parent_name": VALID_PARENT_NAME,
+                "parent_tel": VALID_PARENT_TEL,
+                "applicant_tel": VALID_APPLICANT_TEL,
+                "address": VALID_ADDRESS,
+                "post_code": INVALID_POST_CODE,
+                "image_path": VALID_IMAGE_PATH,
+            },
+            EXPECTED_FAIL,
+        ),
+        # image_path validation failure case
+        (
+            {
+                "email": VALID_EMAIL,
+                "password": VALID_PW,
+                "applicant_name": VALID_APPLICANT_NAME,
+                "sex": VALID_SEX[random.randint(0, 1)],
+                "birth_date": VALID_BIRTH_DATE,
+                "parent_name": VALID_PARENT_NAME,
+                "parent_tel": VALID_PARENT_TEL,
+                "applicant_tel": VALID_APPLICANT_TEL,
+                "address": VALID_ADDRESS,
+                "post_code": VALID_POST_CODE,
+                "image_path": INVALID_IMAGE_PATH,
+            },
+            EXPECTED_FAIL,
+        ),
+    ]
+
