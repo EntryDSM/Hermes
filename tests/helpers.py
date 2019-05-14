@@ -87,11 +87,17 @@ def generate_admin_email(admin_index: int):
 
 
 def generate_endpoint_test_data(
-    method, endpoint, request_body, expected_response_status, expected_response_body
+    method,
+    endpoint,
+    query_param,
+    request_body,
+    expected_response_status,
+    expected_response_body,
 ) -> tuple:
     return (
         method,
         endpoint,
+        query_param,
         request_body,
         expected_response_status,
         expected_response_body,
