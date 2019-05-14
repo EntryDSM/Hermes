@@ -39,3 +39,12 @@ async def test_admin_persistent_repo_get(
     result = await repo.get_list({"admin_type": "ROOT"})
     assert isinstance(result, list) and generate_admin_id(0) == result[0]["admin_id"]
 
+
+@pytest.mark.asyncio
+async def test_admin_persistent_repo_delete(
+    mysql_manage, admin_persistent_repo, save_admin_dummy_to_db
+):
+    repo = admin_persistent_repo
+
+    await repo.delete(generate_admin_id(0))
+
