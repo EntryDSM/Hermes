@@ -39,7 +39,7 @@ class AdminPersistentRepository:
         tasks = list()
 
         for k, v in patch_data.items():
-            task: Callable = self.__getattribute__(f"_patch_{k}")
+            task: Callable = getattr(self, f"_patch_{k}", None)
 
             if task:
                 tasks.append(task(admin_id, v))
