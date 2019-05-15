@@ -1,3 +1,5 @@
+# pylint: disable=unused-argument,redefined-outer-name
+
 import datetime
 import random
 from typing import Any, Dict, Union, Tuple, List, Type
@@ -351,10 +353,10 @@ class ApplicantStatusSchemaTestData(SchemaTestData):
     INVALID_APPLICANT_EMAIL = "applicant@dsm.hs.kr"
     INVALID_RECEIPT_CODE = "A"
     INVALID_IS_PAID = ["TrUe", "faLsE"]
-    INVALID_IS_PRINTED_APPLICATION_ARRIVED = [
+    INVALID_IS_PRINTED_APPLICATION_ARRIVED = [  # pylint: disable=invalid-name
         "TrUe",
         "faLsE",
-    ]  # pylint: disable=invalid-name
+    ]
     INVALID_IS_PASSED_FIRST_APPLY = ["TrUe", "faLsE"]  # pylint: disable=invalid-name
     INVALID_IS_FINAL_SUBMIT = ["TrUe", "faLsE"]
     INVALID_EXAM_CODE = True

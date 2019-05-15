@@ -14,7 +14,7 @@ class DunnoValue:
         self.expected_type = expected_type
 
     def __eq__(self, other):
-        if type(self.expected_type) is list:
+        if isinstance(self.expected_type, list):
             return self._list_eq(other)
         else:
             return self._type_eq(other)

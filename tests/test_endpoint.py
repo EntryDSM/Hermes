@@ -1,8 +1,10 @@
+# pylint: disable=unused-argument,redefined-outer-name,too-many-arguments
+
 import json
 
 import pytest
 
-from helpers import save_admins
+from tests.helpers import save_admins
 from tests.endpoint_test_data import (
     admin_batch_view_test_data,
     admin_view_test_data,

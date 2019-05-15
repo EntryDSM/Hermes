@@ -1,3 +1,5 @@
+# pylint: disable=unused-argument,redefined-outer-name,invalid-name
+
 from dataclasses import asdict
 
 import pytest

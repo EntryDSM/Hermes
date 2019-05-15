@@ -1,3 +1,5 @@
+# pylint: disable=unused-argument,redefined-outer-name
+
 import pytest
 from aioredis.errors import RedisError
 from pymysql.err import MySQLError
