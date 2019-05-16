@@ -5,11 +5,9 @@ import pytest
 from sanic.websocket import WebSocketProtocol
 
 from hermes.presentation.app import create_app
-from hermes.repositories.admin import (AdminCacheRepository,
-                                       AdminPersistentRepository)
+from hermes.repositories.admin import AdminCacheRepository, AdminPersistentRepository
 from hermes.repositories.connections import MySQLConnection, RedisConnection
-from tests.helpers import (create_admin_dummy_object, create_admin_table,
-                           save_admins)
+from tests.helpers import create_admin_dummy_object, create_admin_table, save_admins
 
 
 @pytest.fixture(scope="function")

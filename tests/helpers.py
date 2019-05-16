@@ -14,7 +14,7 @@ class DunnoValue:
         self.expected_type = expected_type
 
     def __eq__(self, other):
-        if type(self.expected_type) is list:
+        if isinstance(self.expected_type, list):
             return self._list_eq(other)
         else:
             return self._type_eq(other)
@@ -87,11 +87,17 @@ def generate_admin_email(admin_index: int):
 
 
 def generate_endpoint_test_data(
-    method, endpoint, request_body, expected_response_status, expected_response_body
+    method,
+    endpoint,
+    query_param,
+    request_body,
+    expected_response_status,
+    expected_response_body,
 ) -> tuple:
     return (
         method,
         endpoint,
+        query_param,
         request_body,
         expected_response_status,
         expected_response_body,
@@ -102,7 +108,6 @@ def admin_batch_response(length):
     responses = [
         {
             "admin_id": DunnoValue(str),
-            "admin_password": DunnoValue(str),
             "admin_type": DunnoValue(str),
             "admin_email": DunnoValue(str),
             "admin_name": DunnoValue(str),
@@ -111,6 +116,19 @@ def admin_batch_response(length):
     ]
 
     return responses
+
+
+def admin_detail_response(index):
+    return {
+        "admin_id": generate_admin_id(index),
+        "admin_type": DunnoValue(str),
+        "admin_email": generate_admin_email(index),
+        "admin_name": DunnoValue(str),
+    }
+
+
+def status_message_response():
+    return {"msg": DunnoValue(str)}
 
 
 async def save_admins(admin_dummy_set):

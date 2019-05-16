@@ -54,13 +54,15 @@ class AdminSchema(Schema):
 class AdminPatchSchema(Schema):
     __entity__ = Admin
 
-    admin_id = String(required=False, allow_none=False, length=45)
-    admin_password = String(required=False, allow_none=False, length=93)
+    Meta = None
+
+    admin_id = String(required=False, allow_none=False, missing=None, length=45)
+    admin_password = String(required=False, allow_none=False, missing=None, length=93)
     admin_type = Enum(
-        required=False, allow_none=False, enum=["ROOT", "ADMIN", "INTERVIEW"]
+        required=False, allow_none=False, missing=None, enum=["ROOT", "ADMINISTRATION", "INTERVIEW"]
     )
-    admin_email = Email(required=False, allow_none=False)
-    admin_name = String(required=False, allow_none=False, length=13)
+    admin_email = Email(required=False, allow_none=False, missing=None,)
+    admin_name = String(required=False, allow_none=False, missing=None, length=13)
 
 
 class ApplicantSchema(Schema):
