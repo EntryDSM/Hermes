@@ -43,6 +43,9 @@ class AdminRepositoryAdapter(AbstractAdapter):
     async def patch(self, admin_id: str, patch_data: Admin):
         patch_data = self._entity_to_data(self.schema, patch_data)
 
+        if not await self.persistence_repository.get_one(admin_id):
+            raise AdminNotFoundException("Not Found")
+
         await self.persistence_repository.patch(admin_id, patch_data)
         await self.cache_repository.delete(admin_id)
         await self.external_service.delete_tokens_from_gateway(admin_id)
