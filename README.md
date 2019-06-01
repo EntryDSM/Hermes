@@ -2,6 +2,8 @@
 ![Python: 3.7](https://img.shields.io/badge/python-3.7-blue.svg)
 [![Code Style: Black](https://badgen.net/badge/code%20style/black/black)](https://github.com/ambv/black)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/186943feb6d546b18884e4548915f136)](https://app.codacy.com/app/NovemberOscar/Hermes?utm_source=github.com&utm_medium=referral&utm_content=EntryDSM/Hermes&utm_campaign=Badge_Grade_Dashboard)
+[![codecov](https://codecov.io/gh/EntryDSM/Hermes/branch/master/graph/badge.svg)](https://codecov.io/gh/EntryDSM/Hermes)
+[![Build Status](https://travis-ci.org/EntryDSM/Hermes.svg?branch=master)](https://travis-ci.org/EntryDSM/Hermes)
 
 ![](https://seeklogo.com/images/H/Hermes-logo-C6741CE724-seeklogo.com.png)
 
@@ -9,7 +11,7 @@ Handles all EntryDSM user(admin, applicant) related functions on the EntryDSM pl
 
 ## Getting Started
 
-By follow these instrucction, you can run hermes on the local for dev&test purpose.
+By follow these instructions, you can run and test hermes on your environment
 
 ### configure pyenv
 
@@ -37,16 +39,23 @@ Let's configure. if you want to run in the pycharm, configure below environment 
 
 ### Testing
 
-hermes is using pytest.
+hermes uses pytest.
+
+> **NOTICE!**
+>
+>hermes uses `pytest-mysql` and `pytest-redis`. these extensions require executable for test setup(they are demonizing executable while testing).
+>
+>so, you must install mysql(5.7) and redis executable.
+>
 
 For run the tests. you must install everything on `requirements_dev.txt` via pip.
 
 after install every test requirements. just run this command.
 
-> $ pytest --cov=hermes
+> $ pytest --cov=./hermes ./tests
 
 There's probably no problem.
- but if you get trouble, follow the below instructuons.
+ but if you get trouble, follow the below instructions.
 
 #### Cofigure test arguments
 
@@ -71,6 +80,8 @@ every configurations are in the  `pytest.ini`
 - MySQL - Most popular RDBMS
 - Redis - In-memory DB for caching
 - Vault - Super secure secret backend
+- Travis CI - Hosted CI/CD pipeline
+- Docker - Most popular container platform
 
 ## Versioning
 ```
@@ -82,6 +93,6 @@ ex: 0.2.3
 - Minor: with partial subcompatibility
 - Patch: with full subcompatibility
 
-## Authors
+## Maintainer
 
 - Seonghyeon Kim - [NovemberOscar](https://github.com/NovemberOscar)
