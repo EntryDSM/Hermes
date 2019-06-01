@@ -1,7 +1,7 @@
 import pytest
 from marshmallow import ValidationError
 
-from schema_test_data import (
+from tests.schema_test_data import (
     AdminSchemaTestData,
     ApplicantSchemaTestData,
     ApplicantStatusSchemaTestData,
