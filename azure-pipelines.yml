@@ -23,7 +23,7 @@ steps:
   displayName: 'Install MySQL'
 
 - script: |
-    sudo apt-get install redis-server
+      wget http://download.redis.io/releases/redis-5.0.3.tar.gz && mkdir redis_install && tar -xvzf redis-5.0.3.tar.gz -C redis_install && cd redis_install/redis-5.0.3 && make && src/redis-server --daemonize yes && cd ../..
   displayName: 'Install Redis'
 
 - script: |
