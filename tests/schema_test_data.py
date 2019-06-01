@@ -25,7 +25,7 @@ class AdminSchemaTestData(SchemaTestData):
     schema = AdminSchema
 
     VALID_ADMIN_ID = "admin_id"
-    VALID_ADMIN_TYPE = ["ROOT", "ADMIN", "INTERVIEW"]
+    VALID_ADMIN_TYPE = ["ROOT", "ADMINISTRATION", "INTERVIEW"]
     VALID_ADMIN_EMAIL = "admin@dsm.hs.kr"
     VALID_ADMIN_NAME = "홍길동"
     VALID_ADMIN_PW = "p@ssword"
