@@ -2,6 +2,8 @@
 ![Python: 3.7](https://img.shields.io/badge/python-3.7-blue.svg)
 [![Code Style: Black](https://badgen.net/badge/code%20style/black/black)](https://github.com/ambv/black)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/186943feb6d546b18884e4548915f136)](https://app.codacy.com/app/NovemberOscar/Hermes?utm_source=github.com&utm_medium=referral&utm_content=EntryDSM/Hermes&utm_campaign=Badge_Grade_Dashboard)
+[![codecov](https://codecov.io/gh/EntryDSM/Hermes/branch/master/graph/badge.svg)](https://codecov.io/gh/EntryDSM/Hermes)
+[![Build Status](https://travis-ci.org/EntryDSM/Hermes.svg?branch=master)](https://travis-ci.org/EntryDSM/Hermes)
 
 ![](https://seeklogo.com/images/H/Hermes-logo-C6741CE724-seeklogo.com.png)
 
@@ -82,6 +84,6 @@ ex: 0.2.3
 - Minor: with partial subcompatibility
 - Patch: with full subcompatibility
 
-## Authors
+## Maintainer
 
 - Seonghyeon Kim - [NovemberOscar](https://github.com/NovemberOscar)
