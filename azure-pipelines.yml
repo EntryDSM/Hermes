@@ -1,0 +1,41 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+strategy:
+  matrix:
+    Python37:
+      python.version: '3.7'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '$(python.version)'
+  displayName: 'Use Python $(python.version)'
+
+- script: |
+    sudo apt-get update
+    sudo apt-get install libmysqlclient-dev
+    sudo debconf-set-selections <<< 'mysql-server-5.6 mysql-server/root_password password your_password'
+    sudo debconf-set-selections <<< 'mysql-server-5.6 mysql-server/root_password_again password your_password'
+    sudo apt-get -y install mysql-server-5.7
+  displayName: 'Install MySQL'
+
+- script: |
+    sudo apt-get install redis-server
+  displayName: 'Install Redis'
+
+- script: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+    pip install -r requirements_dev.txt
+    pip install codecov
+  displayName: 'Install dependencies'
+
+- script: |
+    pip install pytest pytest-azurepipelines
+    pytest --cov=./
+  displayName: 'pytest'
+  env:
+    CODECOV_TOKEN: $(codecov.token)
