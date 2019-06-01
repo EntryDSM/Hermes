@@ -11,7 +11,7 @@ Handles all EntryDSM user(admin, applicant) related functions on the EntryDSM pl
 
 ## Getting Started
 
-By follow these instrucction, you can run hermes on the local for dev&test purpose.
+By follow these instructions, you can run and test hermes on your environment
 
 ### configure pyenv
 
@@ -39,16 +39,23 @@ Let's configure. if you want to run in the pycharm, configure below environment 
 
 ### Testing
 
-hermes is using pytest.
+hermes uses pytest.
+
+> **NOTICE!**
+>
+>hermes uses `pytest-mysql` and `pytest-redis`. these extensions require executable for test setup(they are demonizing executable while testing).
+>
+>so, you must install mysql(5.7) and redis executable.
+>
 
 For run the tests. you must install everything on `requirements_dev.txt` via pip.
 
 after install every test requirements. just run this command.
 
-> $ pytest --cov=hermes
+> $ pytest --cov=./hermes ./tests
 
 There's probably no problem.
- but if you get trouble, follow the below instructuons.
+ but if you get trouble, follow the below instructions.
 
 #### Cofigure test arguments
 
@@ -73,6 +80,8 @@ every configurations are in the  `pytest.ini`
 - MySQL - Most popular RDBMS
 - Redis - In-memory DB for caching
 - Vault - Super secure secret backend
+- Travis CI - Hosted CI/CD pipeline
+- Docker - Most popular container platform
 
 ## Versioning
 ```
