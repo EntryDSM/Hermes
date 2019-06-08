@@ -22,12 +22,12 @@ after_success:
 
 deploy:
   - provider: script
-    script: bash docker_deploy.sh
+    script: bash ./docker_deploy.sh
     on:
       branch: master
 
   - provider: script
-    script: bash docker_deploy.sh
+    script: bash ./docker_deploy.sh
     on:
       branch: dev
 
