@@ -22,7 +22,7 @@ after_success:
 
 deploy:
   - provider: script
-    script: bash ./docker_deploy.sh master
+    script: bash ./docker-deploy.sh master
     on:
       branch: master
 
