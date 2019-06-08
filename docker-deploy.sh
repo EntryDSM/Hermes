@@ -5,11 +5,11 @@ branch=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
 
 echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin registry.entrydsm.hs.kr
 
-if [ ${branch} == "dev" ];then
+if [[ "${branch}" == "dev" ]];then
     docker build -t registry.entrydsm.hs.kr/hermes:dev .
 
     docker push registry.entrydsm.hs.kr/hermes:dev
-elif [ ${branch} == "master" ];then
+elif [[ "${branch}" == "master" ]];then
     image_id=`docker build -t registry.entrydsm.hs.kr/hermes:${version} .`
 
     docker tag ${image_id} registry.entrydsm.hs.kr/hermes:latest
