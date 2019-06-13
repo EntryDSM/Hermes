@@ -38,6 +38,44 @@ def _iso_time_format(dt):
         dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, int(dt.microsecond / 1000))
 
 
+def set_logger(app: Sanic):
+    if not isinstance(app, Sanic):
+        raise RuntimeError("Invalid app was given")
+
+    log_path = os.path.dirname(__file__).replace("/hermes", "").replace("/misc", "")
+    sanic_logger.info(f"Service log will saved at {os.path.abspath(f'{log_path}/{SERVICE_NAME}.log')}")
+
+    _set_sanic_logger(log_path)
+    logger = _set_request_logger(log_path)
+
+    @app.middleware("request")
+    def request_log(req: request.Request):
+        req["request_time"] = datetime.utcnow()
+
+    @app.middleware("response")
+    def response_log(req: request.Request, res: response.HTTPResponse):
+        log = {
+            "level": "INFO" if res.status == 200 else "WARN",
+            "issued_at": _iso_time_format(req["request_time"]),
+            "url": req.url,
+            "method": req.method,
+            "path": req.path,
+            "path_template": req.uri_template,
+            "request_header": dict(req.headers),
+            "request_body": req.body.decode(),
+            "request_query_string": req.args,
+            "request_ip": req.ip,
+            "request_received_at": _iso_time_format(req["request_time"]),
+            "response_sent_at": _iso_time_format(datetime.utcnow()),
+            "response_status": res.status,
+            "response_content_type": res.content_type,
+            "response_body": res.body.decode(),
+            "response_body_length": len(res.body),
+            "duration_time": str(req["request_time"] - datetime.utcnow())
+        }
+        logger.info(json.dumps(log))
+
+
 def _set_sanic_logger(log_path):
     handler = _create_handler(log_path, JSONLogFormatter())
 
