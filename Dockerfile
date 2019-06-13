@@ -18,6 +18,6 @@ RUN apk add --no-cache \
         musl-dev \
         libressl-dev \
         libffi-dev
-EXPOSE 8888
+EXPOSE 80
 ENTRYPOINT ["python"]
 CMD ["-m", "hermes"]
