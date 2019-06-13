@@ -26,7 +26,29 @@ class JSONLogFormatter(logging.Formatter):
         return json.dumps(log)
 
 
+def _create_handler(log_path, formatter=None):
+    handler = logging.FileHandler(f"{log_path}/{SERVICE_NAME}.log")
+    handler.setFormatter(formatter)
+
+    return handler
+
+
 def _iso_time_format(dt):
     return '%04d-%02d-%02dT%02d:%02d:%02d.%03dZ' % (
         dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, int(dt.microsecond / 1000))
 
+
+def _set_sanic_logger(log_path):
+    handler = _create_handler(log_path, JSONLogFormatter())
+
+    sanic_logger.addHandler(handler)
+
+
+def _set_request_logger(log_path):
+    handler = _create_handler(log_path)
+
+    logger = logging.getLogger("sanic-request-log")
+    logger.setLevel(logging.INFO)
+    logger.addHandler(handler)
+
+    return logger
