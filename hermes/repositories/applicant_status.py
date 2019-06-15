@@ -61,3 +61,20 @@ class ApplicantStatusPersistentRepository:
 
         return _patch_function
 
+
+class ApplicantStatusCacheRepository:
+    _key_template: str = "hermes:applicant:status:{0}"
+
+    def __init__(self, connection: Type[CacheConnection]):
+        self.connection = connection
+
+    async def set(self, applicant: Dict[str, Any]) -> None:
+        await self.connection.set(
+            self._key_template.format(applicant["applicant_email"]), applicant
+        )
+
+    async def get(self, email: str) -> Dict[str, Any]:
+        return await self.connection.get(self._key_template.format(email))
+
+    async def delete(self, email: str) -> None:
+        return await self.connection.delete(self._key_template.format(email))
