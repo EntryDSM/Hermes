@@ -105,4 +105,4 @@ class ApplicantStatusSchema(Schema):
     is_printed_application_arrived = Boolean(missing=False)
     is_passed_first_apply = Boolean(missing=False)
     is_final_submit = Boolean(missing=False)
-    exam_code = String(length=6)
+    exam_code = String(allow_none=True, length=6)
