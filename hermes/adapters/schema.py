@@ -8,7 +8,8 @@ from marshmallow.fields import Boolean, Date, Email, Integer
 from marshmallow.fields import String as BaseString
 
 from hermes.entities.admin import Admin
-from hermes.entities.applicant import Applicant, ApplicantStatus
+from hermes.entities.applicant import Applicant
+from hermes.entities.applicant_status import ApplicantStatus
 
 
 class String(BaseString):
@@ -71,6 +72,20 @@ class ApplicantSchema(Schema):
     email = Email(required=True, allow_none=False)
     password = String(required=True, allow_none=False, length=93)
     applicant_name = String(missing=None, length=13)
+    sex = Enum(missing=None, enum=["MALE", "FEMALE"])
+    birth_date = Date(missing=None)
+    parent_name = String(missing=None, length=13)
+    parent_tel = String(missing=None, regex=r"01\d-\d{3,4}-\d{4}")
+    applicant_tel = String(missing=None, regex=r"01\d-\d{3,4}-\d{4}")
+    address = String(missing=None, length=500)
+    post_code = String(missing=None, length=5)
+    image_path = String(missing=None, length=256)
+
+
+class ApplicantPatchSchema(Schema):
+    __entity__ = Applicant
+
+    password = String(missing=None)
     sex = Enum(missing=None, enum=["MALE", "FEMALE"])
     birth_date = Date(missing=None)
     parent_name = String(missing=None, length=13)
