@@ -8,11 +8,12 @@ services:
 
 python:
   - "3.7"
-
-sonarcloud:
-  organization: "entrydsm" # the key of the org you chose at step #3
-  token:
-    secure: "JANz3TV6qy7wWeMN0grwtp6eeDieaHiycmZ8JwYDnjTWHA2dVv25j0EA99bCpaE+voOKBKaaEX0eFCVN0fcNVzUFvPPALUR99zhPfR30m9GrDz71RVXh/7OuYuUjlNFYfHKaRSEvVhp71+ZV+eqls36V+8EQ8DavWiZdH2zZqVrrxoZm/jlyjpQZ1/UNv6gx6IU/lChv0Gj0a0VT5z6WNlkbF5u3akSnbpC/IPVW3k6bjvC0VIuiXEQVjeR8/XbQnV0oBhPt/MAzRrhTYXGPpLD1cCki7eT9vs32dNbA6imqNr0e1hTe20A+cwlW1Ms7JablhMuM6LlhazLVQY9EFmjkmWZ9e5YIIU8Y72XE4PVCTTDzx6u8g+p8ewtJYIS/U+hHSE50bcPtKp8t54//5+OnfVKUehJXiElskPOMeu2UNGPONwCmUEB3D6gQJZRS7EO3gtXtU7PaT+PlHAetxXGqqShMikHM4F4QSjBWWsnpONRL4GOCB4Iin5H7tpk7vQy1fslArivzRoI0xOSmJWbU0xewnV4Z47729Sv/PJ9RVOjCBuJjFIRAOriRFUsg2nK56AI8K4MiNF4YeMwBEn5yiy2M2tiJSKzrNA/Ykoz032DtDghBPlXDO7Q7rN4thHvSX1OgHVnb8O6FUuPzBUq4sJBz5ucKxY0/X7sUkC8="
+  
+addons:
+  sonarcloud:
+    organization: "entrydsm" # the key of the org you chose at step #3
+    token:
+      secure: "JANz3TV6qy7wWeMN0grwtp6eeDieaHiycmZ8JwYDnjTWHA2dVv25j0EA99bCpaE+voOKBKaaEX0eFCVN0fcNVzUFvPPALUR99zhPfR30m9GrDz71RVXh/7OuYuUjlNFYfHKaRSEvVhp71+ZV+eqls36V+8EQ8DavWiZdH2zZqVrrxoZm/jlyjpQZ1/UNv6gx6IU/lChv0Gj0a0VT5z6WNlkbF5u3akSnbpC/IPVW3k6bjvC0VIuiXEQVjeR8/XbQnV0oBhPt/MAzRrhTYXGPpLD1cCki7eT9vs32dNbA6imqNr0e1hTe20A+cwlW1Ms7JablhMuM6LlhazLVQY9EFmjkmWZ9e5YIIU8Y72XE4PVCTTDzx6u8g+p8ewtJYIS/U+hHSE50bcPtKp8t54//5+OnfVKUehJXiElskPOMeu2UNGPONwCmUEB3D6gQJZRS7EO3gtXtU7PaT+PlHAetxXGqqShMikHM4F4QSjBWWsnpONRL4GOCB4Iin5H7tpk7vQy1fslArivzRoI0xOSmJWbU0xewnV4Z47729Sv/PJ9RVOjCBuJjFIRAOriRFUsg2nK56AI8K4MiNF4YeMwBEn5yiy2M2tiJSKzrNA/Ykoz032DtDghBPlXDO7Q7rN4thHvSX1OgHVnb8O6FUuPzBUq4sJBz5ucKxY0/X7sUkC8="
 
 
 install:
