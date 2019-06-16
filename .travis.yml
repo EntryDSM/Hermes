@@ -23,6 +23,7 @@ install:
 
 script:
   - pytest --cov=./hermes ./tests
+  - coverage xml -i
   - sonar-scanner
 
 after_success:
