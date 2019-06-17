@@ -12,28 +12,19 @@ class AdminPersistentRepository:
         self.connection = connection
 
     table_creation_query = """
-            create table if not exists applicant
+            create table if not exists admin
             (
-              email          varchar(320)                        not null
+              admin_id       varchar(45)                                  not null
                 primary key,
-              password       varchar(320)                        not null,
-              applicant_name varchar(13)                         null,
-              sex            enum ('MALE', 'FEMALE')             null,
-              birth_date     date                                null,
-              parent_name    varchar(13)                         null,
-              parent_tel     varchar(12)                         null,
-              applicant_tel  varchar(12)                         null,
-              address        varchar(500)                        null,
-              post_code      varchar(5)                          null,
-              image_path     varchar(256)                        null,
-              created_at     timestamp default CURRENT_TIMESTAMP not null,
-              updated_at     timestamp default CURRENT_TIMESTAMP not null,
-              constraint applicant_tel_UNIQUE
-                unique (applicant_tel),
-              constraint image_path_UNIQUE
-                unique (image_path)
+              admin_password varchar(100)                                 not null,
+              admin_type     enum ('ROOT', 'ADMINISTRATION', 'INTERVIEW') not null,
+              admin_email    varchar(320)                                 not null,
+              admin_name     varchar(13)                                  not null,
+              created_at     timestamp default CURRENT_TIMESTAMP          not null,
+              updated_at     timestamp default CURRENT_TIMESTAMP          not null
             ) character set utf8mb4;
-        """
+    """
+
 
     async def save(self, admin: Dict[str, Any]) -> None:
         query = """INSERT INTO admin (
