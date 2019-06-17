@@ -52,12 +52,12 @@ class ApplicantStatusPersistentRepository:
         patch_data = {k: v for k, v in patch_data.items() if v}
 
         for k, v in patch_data.items():
-            task: Callable[[Type[DBConnection], str, str], Awaitable[None]] = getattr(
+            task: Callable[[str, str], Awaitable[None]] = getattr(
                 self, f"_patch_{k}", None
             )
 
             if task:
-                tasks.append(task(self.connection, email, v))
+                tasks.append(task(email, v))
 
         await asyncio.gather(*tasks)
 

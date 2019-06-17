@@ -63,7 +63,7 @@ class ApplicantPersistentRepository:
             )
 
             if task:
-                tasks.append(task(self.connection, email, v))
+                tasks.append(task(email, v))
 
         await asyncio.gather(*tasks)
 
