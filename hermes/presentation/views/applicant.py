@@ -15,12 +15,12 @@ from hermes.adapters.services.applicant_status import ApplicantStatusServiceAdap
 from hermes.repositories.connections import MySQLConnection, RedisConnection
 
 
-def _security_filter(data: Union[List, Dict]):
-    if isinstance(data, list):
-        for i in data:
-            del i["password"]
-    elif isinstance(data, dict):
-        del data["password"]
+def _security_filter(unfiltered_data: Union[List, Dict]):
+    if isinstance(unfiltered_data, list):
+        for unfiltered_data_object in unfiltered_data:
+            del unfiltered_data_object["password"]
+    elif isinstance(unfiltered_data, dict):
+        del unfiltered_data["password"]
 
 
 class ApplicantView(HTTPMethodView):
