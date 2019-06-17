@@ -11,6 +11,7 @@ class ApplicantPersistentRepository:
     def __init__(self, connection: Type[DBConnection]):
         self.connection = connection
 
+        self._patch_password = self._get_patch_function("password")
         self._patch_applicant_name = self._get_patch_function("applicant_name")
         self._patch_sex = self._get_patch_function("sex")
         self._patch_birth_date = self._get_patch_function("birth_date")
