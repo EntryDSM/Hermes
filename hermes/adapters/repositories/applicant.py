@@ -4,10 +4,7 @@ from marshmallow import Schema
 from pymysql import IntegrityError
 
 from hermes.adapters import AbstractAdapter
-from hermes.adapters.schema import (
-    ApplicantPatchSchema,
-    ApplicantSchema,
-)
+from hermes.adapters.schema import ApplicantPatchSchema, ApplicantSchema
 from hermes.entities.applicant import Applicant
 from hermes.misc.exceptions import (
     ApplicantAlreadyExistException,
@@ -25,9 +22,7 @@ class ApplicantRepositoryAdapter(AbstractAdapter):
     patch_schema = ApplicantPatchSchema()
 
     def __init__(
-        self,
-        db_connection: Type[DBConnection],
-        cache_connection: Type[CacheConnection],
+        self, db_connection: Type[DBConnection], cache_connection: Type[CacheConnection]
     ):
 
         self.persistence_repository = ApplicantPersistentRepository(db_connection)
@@ -77,5 +72,3 @@ class ApplicantRepositoryAdapter(AbstractAdapter):
 
     def _entity_to_data(self, schema: Schema, entity) -> Dict[str, Any]:
         return schema.dump(entity)
-
-

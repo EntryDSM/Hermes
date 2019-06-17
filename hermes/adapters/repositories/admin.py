@@ -8,7 +8,7 @@ from hermes.entities.admin import Admin
 from hermes.misc.exceptions import AdminAlreadyExistException, AdminNotFoundException
 from hermes.repositories.admin import AdminCacheRepository, AdminPersistentRepository
 from hermes.repositories.connections import CacheConnection, DBConnection
-from hermes.repositories.external_service import GatewayConnection, ExternalService
+from hermes.repositories.external_service import ExternalService, GatewayConnection
 
 
 class AdminRepositoryAdapter(AbstractAdapter):

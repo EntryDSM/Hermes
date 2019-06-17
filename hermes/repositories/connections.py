@@ -43,7 +43,7 @@ class MySQLConnection(DBConnection):
     __write_pool: aiomysql.Pool = None
     _connection_info = None
 
-    is_available = not(__read_pool and __write_pool)
+    is_available = not (__read_pool and __write_pool)
 
     @classmethod
     async def initialize(cls, connection_info):
@@ -66,7 +66,9 @@ class MySQLConnection(DBConnection):
 
     @classmethod
     async def _get_read_pool(cls) -> aiomysql.Pool:
-        if cls.__read_pool and not cls.__read_pool._closed:  # pylint: disable=protected-access
+        if (
+            cls.__read_pool and not cls.__read_pool._closed
+        ):  # pylint: disable=protected-access
             return cls.__read_pool
 
         cls.__read_pool = await aiomysql.create_pool(**cls._connection_info)
@@ -75,7 +77,9 @@ class MySQLConnection(DBConnection):
 
     @classmethod
     async def _get_write_pool(cls) -> aiomysql.Pool:
-        if cls.__write_pool and not cls.__write_pool._closed:  # pylint: disable=protected-access
+        if (
+            cls.__write_pool and not cls.__write_pool._closed
+        ):  # pylint: disable=protected-access
             return cls.__write_pool
 
         cls.__write_pool = await aiomysql.create_pool(**cls._connection_info)

@@ -1,22 +1,26 @@
-from typing import Type, Dict, Any
+from typing import Any, Dict, Type
 
 from marshmallow import Schema
 
 from hermes.adapters import AbstractAdapter
 from hermes.adapters.schema import ApplicantStatusSchema
 from hermes.entities.applicant_status import ApplicantStatus
-from hermes.misc.exceptions import ApplicantNotFoundException, ApplicantStatusNotFoundException
-from hermes.repositories.applicant_status import ApplicantStatusPersistentRepository, ApplicantStatusCacheRepository
-from hermes.repositories.connections import DBConnection, CacheConnection
+from hermes.misc.exceptions import (
+    ApplicantNotFoundException,
+    ApplicantStatusNotFoundException,
+)
+from hermes.repositories.applicant_status import (
+    ApplicantStatusCacheRepository,
+    ApplicantStatusPersistentRepository,
+)
+from hermes.repositories.connections import CacheConnection, DBConnection
 
 
 class ApplicantStatusRepositoryAdapter(AbstractAdapter):
     schema = ApplicantStatusSchema()
 
     def __init__(
-        self,
-        db_connection: Type[DBConnection],
-        cache_connection: Type[CacheConnection],
+        self, db_connection: Type[DBConnection], cache_connection: Type[CacheConnection]
     ):
         self.persistence_repository = ApplicantStatusPersistentRepository(db_connection)
         self.cache_repository = ApplicantStatusCacheRepository(cache_connection)

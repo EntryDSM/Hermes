@@ -1,8 +1,8 @@
 import asyncio
 import datetime
-from typing import Type, Dict, Any, Callable, Awaitable
+from typing import Any, Awaitable, Callable, Dict, Type
 
-from hermes.repositories.connections import DBConnection, CacheConnection
+from hermes.repositories.connections import CacheConnection, DBConnection
 
 
 class ApplicantStatusPersistentRepository:
@@ -14,7 +14,9 @@ class ApplicantStatusPersistentRepository:
         self._patch_is_printed_application_arrived = self._get_patch_function(
             "is_printed_application_arrived"
         )
-        self._patch_is_passed_first_apply = self._get_patch_function("is_passed_first_apply")
+        self._patch_is_passed_first_apply = self._get_patch_function(
+            "is_passed_first_apply"
+        )
         self._patch_is_final_submit = self._get_patch_function("is_final_submit")
         self._patch_exam_code = self._get_patch_function("exam_code")
 
@@ -53,9 +55,7 @@ class ApplicantStatusPersistentRepository:
 
     def _get_patch_function(self, column: str) -> Callable[[str, str], Awaitable[None]]:
         async def _patch_function(email: str, value: Any) -> None:
-            query = (
-                f"UPDATE applicant_status SET {column} = %s, updated_at = %s WHERE applicant_email = %s"
-            )
+            query = f"UPDATE applicant_status SET {column} = %s, updated_at = %s WHERE applicant_email = %s"
 
             await self.connection.execute(query, value, datetime.datetime.now(), email)
 

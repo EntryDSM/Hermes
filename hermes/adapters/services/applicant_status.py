@@ -1,9 +1,11 @@
-from typing import Dict, Any
+from typing import Any, Dict
 
 from sanic.exceptions import NotFound
 
 from hermes.adapters import AbstractAdapter
-from hermes.adapters.repositories.applicant_status import ApplicantStatusRepositoryAdapter
+from hermes.adapters.repositories.applicant_status import (
+    ApplicantStatusRepositoryAdapter,
+)
 from hermes.adapters.schema import ApplicantStatusSchema, Schema
 from hermes.entities.applicant_status import ApplicantStatus
 from hermes.misc.exceptions import ApplicantStatusNotFoundException

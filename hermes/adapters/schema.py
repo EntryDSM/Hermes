@@ -60,9 +60,12 @@ class AdminPatchSchema(Schema):
     admin_id = String(required=False, allow_none=False, missing=None, length=45)
     admin_password = String(required=False, allow_none=False, missing=None, length=93)
     admin_type = Enum(
-        required=False, allow_none=False, missing=None, enum=["ROOT", "ADMINISTRATION", "INTERVIEW"]
+        required=False,
+        allow_none=False,
+        missing=None,
+        enum=["ROOT", "ADMINISTRATION", "INTERVIEW"],
     )
-    admin_email = Email(required=False, allow_none=False, missing=None,)
+    admin_email = Email(required=False, allow_none=False, missing=None)
     admin_name = String(required=False, allow_none=False, missing=None, length=13)
 
 

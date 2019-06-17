@@ -1,6 +1,6 @@
 import asyncio
 import datetime
-from typing import Any, Callable, Dict, List, Type, Awaitable
+from typing import Any, Awaitable, Callable, Dict, List, Type
 
 from werkzeug.security import generate_password_hash
 

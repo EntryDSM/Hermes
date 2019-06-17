@@ -2,15 +2,15 @@ from sanic.request import Request
 from sanic.response import json
 from sanic.views import HTTPMethodView
 
-from hermes.adapters.repositories.applicant_status import ApplicantStatusRepositoryAdapter
+from hermes.adapters.repositories.applicant_status import (
+    ApplicantStatusRepositoryAdapter,
+)
 from hermes.adapters.services.applicant_status import ApplicantStatusServiceAdapter
 from hermes.repositories.connections import MySQLConnection, RedisConnection
 
 
 class ApplicantStatusView(HTTPMethodView):
-    repository = ApplicantStatusRepositoryAdapter(
-        MySQLConnection, RedisConnection
-    )
+    repository = ApplicantStatusRepositoryAdapter(MySQLConnection, RedisConnection)
     service = ApplicantStatusServiceAdapter(repository)
 
     async def patch(self, request: Request, email: str):

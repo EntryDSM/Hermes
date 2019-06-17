@@ -4,13 +4,11 @@ from sanic.request import Request
 from sanic.response import json
 from sanic.views import HTTPMethodView
 
-from hermes.adapters.repositories.applicant import (
-    ApplicantRepositoryAdapter,
+from hermes.adapters.repositories.applicant import ApplicantRepositoryAdapter
+from hermes.adapters.repositories.applicant_status import (
+    ApplicantStatusRepositoryAdapter,
 )
-from hermes.adapters.repositories.applicant_status import ApplicantStatusRepositoryAdapter
-from hermes.adapters.services.applicant import (
-    ApplicantServiceAdapter,
-)
+from hermes.adapters.services.applicant import ApplicantServiceAdapter
 from hermes.adapters.services.applicant_status import ApplicantStatusServiceAdapter
 from hermes.repositories.connections import MySQLConnection, RedisConnection
 
@@ -24,9 +22,7 @@ def _security_filter(unfiltered_data: Union[List, Dict]):
 
 
 class ApplicantView(HTTPMethodView):
-    applicant_repository = ApplicantRepositoryAdapter(
-        MySQLConnection, RedisConnection
-    )
+    applicant_repository = ApplicantRepositoryAdapter(MySQLConnection, RedisConnection)
     status_repository = ApplicantStatusRepositoryAdapter(
         MySQLConnection, RedisConnection
     )
@@ -47,9 +43,7 @@ class ApplicantView(HTTPMethodView):
 
 
 class ApplicantBatchView(HTTPMethodView):
-    repository = ApplicantRepositoryAdapter(
-        MySQLConnection, RedisConnection
-    )
+    repository = ApplicantRepositoryAdapter(MySQLConnection, RedisConnection)
     service = ApplicantServiceAdapter(repository)
 
     async def get(self, request: Request):
@@ -62,9 +56,7 @@ class ApplicantBatchView(HTTPMethodView):
 
 
 class ApplicantDetailView(HTTPMethodView):
-    repository = ApplicantRepositoryAdapter(
-        MySQLConnection, RedisConnection
-    )
+    repository = ApplicantRepositoryAdapter(MySQLConnection, RedisConnection)
     service = ApplicantServiceAdapter(repository)
 
     async def get(self, request: Request, email: str):
@@ -84,5 +76,3 @@ class ApplicantDetailView(HTTPMethodView):
         await self.service.delete(email)
 
         return json({"msg": "Successfully deleted"}, 200)
-
-

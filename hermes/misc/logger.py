@@ -1,6 +1,6 @@
-import os
 import json
 import logging
+import os
 import traceback
 from datetime import datetime
 
@@ -21,7 +21,9 @@ class JSONLogFormatter(logging.Formatter):
             "filename": record.filename,
             "line_no": record.lineno,
             "msg": record.getMessage(),
-            "exec_info": ''.join(traceback.format_exception(*record.exc_info)) if record.exc_info else ''
+            "exec_info": "".join(traceback.format_exception(*record.exc_info))
+            if record.exc_info
+            else "",
         }
         return json.dumps(log)
 
@@ -34,8 +36,15 @@ def _create_handler(log_path, formatter=None):
 
 
 def _iso_time_format(dt):
-    return '%04d-%02d-%02dT%02d:%02d:%02d.%03dZ' % (
-        dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, int(dt.microsecond / 1000))
+    return "%04d-%02d-%02dT%02d:%02d:%02d.%03dZ" % (
+        dt.year,
+        dt.month,
+        dt.day,
+        dt.hour,
+        dt.minute,
+        dt.second,
+        int(dt.microsecond / 1000),
+    )
 
 
 def set_logger(app: Sanic):
@@ -43,7 +52,9 @@ def set_logger(app: Sanic):
         raise RuntimeError("Invalid app was given")
 
     log_path = os.path.dirname(__file__).replace("/hermes", "").replace("/misc", "")
-    sanic_logger.info(f"Service log will saved at {os.path.abspath(f'{log_path}/{SERVICE_NAME}.log')}")
+    sanic_logger.info(
+        f"Service log will saved at {os.path.abspath(f'{log_path}/{SERVICE_NAME}.log')}"
+    )
 
     _set_sanic_logger(log_path)
     logger = _set_request_logger(log_path)
@@ -71,7 +82,7 @@ def set_logger(app: Sanic):
             "response_content_type": res.content_type,
             "response_body": res.body.decode(),
             "response_body_length": len(res.body),
-            "duration_time": str(req["request_time"] - datetime.utcnow())
+            "duration_time": str(req["request_time"] - datetime.utcnow()),
         }
         logger.info(json.dumps(log))
 

@@ -3,14 +3,8 @@ from typing import Any, Dict, List, Optional
 from sanic.exceptions import NotFound
 
 from hermes.adapters import AbstractAdapter
-from hermes.adapters.repositories.applicant import (
-    ApplicantRepositoryAdapter,
-)
-from hermes.adapters.schema import (
-    ApplicantPatchSchema,
-    ApplicantSchema,
-    Schema,
-)
+from hermes.adapters.repositories.applicant import ApplicantRepositoryAdapter
+from hermes.adapters.schema import ApplicantPatchSchema, ApplicantSchema, Schema
 from hermes.entities.applicant import Applicant
 from hermes.misc.exceptions import (
     ApplicantAlreadyExistException,
@@ -75,5 +69,3 @@ class ApplicantServiceAdapter(AbstractAdapter):
 
     def _entity_to_data(self, schema: Schema, entity: Applicant) -> Dict[str, Any]:
         return schema.dump(entity)
-
-

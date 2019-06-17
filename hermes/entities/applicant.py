@@ -15,5 +15,3 @@ class Applicant:
     address: str
     post_code: str
     image_path: str
-
-

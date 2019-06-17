@@ -1,8 +1,6 @@
 from typing import Any, Dict, List, Optional
 
-from hermes.adapters.repositories.applicant import (
-    ApplicantRepositoryAdapter,
-)
+from hermes.adapters.repositories.applicant import ApplicantRepositoryAdapter
 from hermes.entities.applicant import Applicant
 
 

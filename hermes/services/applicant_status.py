@@ -1,4 +1,6 @@
-from hermes.adapters.repositories.applicant_status import ApplicantStatusRepositoryAdapter
+from hermes.adapters.repositories.applicant_status import (
+    ApplicantStatusRepositoryAdapter,
+)
 from hermes.entities.applicant_status import ApplicantStatus
 
 
