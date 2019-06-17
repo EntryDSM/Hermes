@@ -2,6 +2,9 @@ from sanic.log import logger
 
 from hermes.misc.config import settings
 from hermes.repositories.connections import MySQLConnection, RedisConnection
+from hermes.repositories.admin import AdminPersistentRepository
+from hermes.repositories.applicant import ApplicantPersistentRepository
+from hermes.repositories.applicant_status import ApplicantStatusPersistentRepository
 
 
 async def initialize(app, loop):
@@ -29,70 +32,9 @@ async def migrate(app, loop):
             "Database connection is unavailable, Make sure you initialize connection!"
         )
 
-    await MySQLConnection.execute(
-        """
-            create table if not exists admin
-            (
-              admin_id       varchar(45)                                  not null
-                primary key,
-              admin_password varchar(100)                                 not null,
-              admin_type     enum ('ROOT', 'ADMINISTRATION', 'INTERVIEW') not null,
-              admin_email    varchar(320)                                 not null,
-              admin_name     varchar(13)                                  not null,
-              created_at     timestamp default CURRENT_TIMESTAMP          not null,
-              updated_at     timestamp default CURRENT_TIMESTAMP          not null
-            ) character set utf8mb4;
-    """
-    )
-    await MySQLConnection.execute(
-        """
-            create table if not exists applicant
-            (
-              email          varchar(320)                        not null
-                primary key,
-              password       varchar(320)                        not null,
-              applicant_name varchar(13)                         null,
-              sex            enum ('MALE', 'FEMALE')             null,
-              birth_date     date                                null,
-              parent_name    varchar(13)                         null,
-              parent_tel     varchar(12)                         null,
-              applicant_tel  varchar(12)                         null,
-              address        varchar(500)                        null,
-              post_code      varchar(5)                          null,
-              image_path     varchar(256)                        null,
-              created_at     timestamp default CURRENT_TIMESTAMP not null,
-              updated_at     timestamp default CURRENT_TIMESTAMP not null,
-              constraint applicant_tel_UNIQUE
-                unique (applicant_tel),
-              constraint image_path_UNIQUE
-                unique (image_path)
-            ) character set utf8mb4;
-        """
-    )
-    await MySQLConnection.execute(
-        """
-            create table if not exists applicant_status
-            (
-              applicant_email                varchar(320)                        not null
-                primary key,
-              receipt_code                   int(3) unsigned zerofill auto_increment,
-              is_paid                        tinyint   default 0                 not null,
-              is_printed_application_arrived tinyint   default 0                 not null,
-              is_passed_first_apply          tinyint   default 0                 not null,
-              is_final_submit                tinyint   default 0                 not null,
-              exam_code                      varchar(6)                          null,
-              created_at                     timestamp default CURRENT_TIMESTAMP not null,
-              updated_at                     timestamp default CURRENT_TIMESTAMP not null,
-              constraint exam_code_UNIQUE
-                unique (exam_code),
-              constraint receipt_code_UNIQUE
-                unique (receipt_code),
-              constraint fk_applicant_status_applicant
-                foreign key (applicant_email) references applicant (email)
-                  on update cascade on delete cascade
-            ) character set utf8mb4;
-        """
-    )
+    await MySQLConnection.execute(AdminPersistentRepository.table_creation_query)
+    await MySQLConnection.execute(ApplicantPersistentRepository.table_creation_query)
+    await MySQLConnection.execute(ApplicantStatusPersistentRepository.table_creation_query)
 
     logger.info("Database migration complete")
 

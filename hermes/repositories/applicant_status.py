@@ -20,6 +20,29 @@ class ApplicantStatusPersistentRepository:
         self._patch_is_final_submit = self._get_patch_function("is_final_submit")
         self._patch_exam_code = self._get_patch_function("exam_code")
 
+    table_creation_query = """
+            create table if not exists applicant_status
+            (
+              applicant_email                varchar(320)                        not null
+                primary key,
+              receipt_code                   int(3) unsigned zerofill auto_increment,
+              is_paid                        tinyint   default 0                 not null,
+              is_printed_application_arrived tinyint   default 0                 not null,
+              is_passed_first_apply          tinyint   default 0                 not null,
+              is_final_submit                tinyint   default 0                 not null,
+              exam_code                      varchar(6)                          null,
+              created_at                     timestamp default CURRENT_TIMESTAMP not null,
+              updated_at                     timestamp default CURRENT_TIMESTAMP not null,
+              constraint exam_code_UNIQUE
+                unique (exam_code),
+              constraint receipt_code_UNIQUE
+                unique (receipt_code),
+              constraint fk_applicant_status_applicant
+                foreign key (applicant_email) references applicant (email)
+                  on update cascade on delete cascade
+            ) character set utf8mb4;
+        """
+
     async def init(self, email):
         query = "INSERT INTO applicant_status (applicant_email) VALUES (%s)"
         await self.connection.execute(query, email)
