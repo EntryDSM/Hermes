@@ -1,5 +1,6 @@
 from typing import Any, Dict, List, Optional
 
+from marshmallow import ValidationError
 from sanic.exceptions import NotFound
 
 from hermes.adapters import AbstractAdapter
@@ -10,7 +11,7 @@ from hermes.misc.exceptions import (
     ApplicantAlreadyExistException,
     ApplicantNotFoundException,
     Conflict,
-)
+    BadRequest)
 from hermes.services.applicant import ApplicantService
 
 
@@ -22,8 +23,10 @@ class ApplicantServiceAdapter(AbstractAdapter):
         self.service = ApplicantService(repository)
 
     async def create(self, init_applicant_data: Dict[str, Any]) -> Dict[str, Any]:
-        entity = self._data_to_entity(self.schema, init_applicant_data)
-
+        try:
+            entity = self._data_to_entity(self.schema, init_applicant_data)
+        except ValidationError as e:
+            raise BadRequest("Bad Request")
         try:
             await self.service.create(entity)
         except ApplicantAlreadyExistException as e:
