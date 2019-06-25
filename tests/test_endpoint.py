@@ -49,4 +49,12 @@ async def test_endpoint(
     )
 
     assert r.status == expected_response_status
-    assert await r.json() == expected_response_body
+
+    actual_body = await r.json()
+
+    if isinstance(actual_body, list):
+        for expected in expected_response_body:
+            if expected not in actual_body:
+                assert False
+    else:
+        assert actual_body == expected_response_body
