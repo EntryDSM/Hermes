@@ -257,3 +257,70 @@ def applicant_batch_view_test_data():
     ]
 
     return test_set
+
+
+def applicant_detail_view_test_data():
+    test_set = [
+        generate_endpoint_test_data(
+            method="GET",
+            endpoint=f"/api/v1/applicant/{generate_applicant_email(0)}",
+            query_param={},
+            request_body={},
+            expected_response_status=200,
+            expected_response_body=applicant_response(0),
+        ),
+        generate_endpoint_test_data(
+            method="GET",
+            endpoint=f"/api/v1/applicant/{generate_applicant_email(19)}",
+            query_param={},
+            request_body={},
+            expected_response_status=404,
+            expected_response_body=status_message_response(),
+        ),
+        generate_endpoint_test_data(
+            method="PATCH",
+            endpoint=f"/api/v1/applicant/{generate_applicant_email(3)}",
+            query_param={},
+            request_body={"password": "ch@nged_p@sswo!rd"},
+            expected_response_status=200,
+            expected_response_body=applicant_response(3),
+        ),
+        generate_endpoint_test_data(
+            method="PATCH",
+            endpoint=f"/api/v1/applicant/{generate_applicant_email(4)}",
+            query_param={},
+            request_body={"address": "Seattle, WA"},
+            expected_response_status=200,
+            expected_response_body=applicant_response(4),
+        ),
+        generate_endpoint_test_data(
+            method="PATCH",
+            endpoint=f"/api/v1/applicant/{generate_applicant_email(5)}",
+            query_param={},
+            request_body={"birth_date": str(datetime.datetime.now().date())},
+            expected_response_status=200,
+            expected_response_body=applicant_response(5),
+        ),
+        generate_endpoint_test_data(
+            method="PATCH",
+            endpoint=f"/api/v1/applicant/{generate_applicant_email(6)}",
+            query_param={},
+            request_body={
+                "birth_date": str(datetime.datetime.now().date()),
+                "my_name": "post malone",
+            },
+            expected_response_status=200,
+            expected_response_body=applicant_response(6),
+        ),
+        generate_endpoint_test_data(
+            method="PATCH",
+            endpoint=f"/api/v1/applicant/{generate_applicant_email(7)}",
+            query_param={},
+            request_body={"my_favorite_food": "sushi"},
+            expected_response_status=200,
+            expected_response_body=applicant_response(7),
+        ),
+    ]
+
+    return test_set
+
