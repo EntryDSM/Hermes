@@ -124,3 +124,34 @@ async def test_admin_cache_repo_delete(
 
     for i in range(0, 10):
         await repo.delete(generate_admin_id(i))
+
+
+@pytest.mark.asyncio
+async def test_applicant_cache_repo_set(
+    cache_manage, applicant_cache_repo, applicant_dummy_set
+):
+    repo = applicant_cache_repo
+    test_data = asdict(applicant_dummy_set[0])
+    test_data["birth_date"] = str(test_data["birth_date"])
+
+    await repo.set(test_data)
+
+
+@pytest.mark.asyncio
+async def test_applicant_cache_repo_get(
+    cache_manage, applicant_cache_repo, save_applicant_dummy_to_cache
+):
+    repo = applicant_cache_repo
+    for i in range(10):
+        result = await repo.get(generate_applicant_email(i))
+        assert generate_applicant_email(i) == result["email"]
+
+
+@pytest.mark.asyncio
+async def test_applicant_cache_repo_delete(
+    cache_manage, applicant_cache_repo, save_applicant_dummy_to_cache
+):
+    repo = applicant_cache_repo
+    for i in range(10):
+        await repo.delete(generate_applicant_email(i))
+
