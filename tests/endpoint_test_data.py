@@ -324,3 +324,49 @@ def applicant_detail_view_test_data():
 
     return test_set
 
+
+def applicant_status_view_test_data():
+    test_set = [
+        generate_endpoint_test_data(
+            method="GET",
+            endpoint=f"/api/v1/applicant/{generate_applicant_email(0)}/status",
+            query_param={},
+            request_body={},
+            expected_response_status=200,
+            expected_response_body=applicant_status_dunno_response,
+        ),
+        generate_endpoint_test_data(
+            method="GET",
+            endpoint=f"/api/v1/applicant/{generate_applicant_email(14)}/status",
+            query_param={},
+            request_body={},
+            expected_response_status=404,
+            expected_response_body=status_message_response(),
+        ),
+        generate_endpoint_test_data(
+            method="PATCH",
+            endpoint=f"/api/v1/applicant/{generate_applicant_email(2)}/status",
+            query_param={},
+            request_body={"exam_code": "035633"},
+            expected_response_status=200,
+            expected_response_body=applicant_status_dunno_response,
+        ),
+        generate_endpoint_test_data(
+            method="PATCH",
+            endpoint=f"/api/v1/applicant/{generate_applicant_email(3)}/status",
+            query_param={},
+            request_body={"is_prd_application_arrived": "true"},
+            expected_response_status=200,
+            expected_response_body=applicant_status_dunno_response,
+        ),
+        generate_endpoint_test_data(
+            method="PATCH",
+            endpoint=f"/api/v1/applicant/{generate_applicant_email(13)}/status",
+            query_param={},
+            request_body={"is_printed_application_arrived": "true"},
+            expected_response_status=404,
+            expected_response_body=status_message_response(),
+        ),
+    ]
+
+    return test_set
