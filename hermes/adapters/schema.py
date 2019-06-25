@@ -1,15 +1,23 @@
 import re
 from typing import Any, List
+from datetime import date
 
 from marshmallow import EXCLUDE
 from marshmallow import Schema as BaseSchema
 from marshmallow import post_load
-from marshmallow.fields import Boolean, Date, Email, Integer
+from marshmallow.fields import Boolean, Email, Integer, Date as BaseDate
 from marshmallow.fields import String as BaseString
 
 from hermes.entities.admin import Admin
 from hermes.entities.applicant import Applicant
 from hermes.entities.applicant_status import ApplicantStatus
+
+
+class Date(BaseDate):
+    def _deserialize(self, value, attr, data, **kwargs):
+        if isinstance(value, date):
+            return value
+        return super()._deserialize(value, attr, data)
 
 
 class String(BaseString):
