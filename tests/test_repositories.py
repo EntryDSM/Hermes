@@ -155,3 +155,46 @@ async def test_applicant_cache_repo_delete(
     for i in range(10):
         await repo.delete(generate_applicant_email(i))
 
+
+@pytest.mark.asyncio
+async def test_applicant_status_persistent_repo_init(
+    mysql_manage,
+    applicant_status_persistent_repo,
+    save_applicant_dummy_to_db,
+    applicant_status_dummy_set,
+):
+    repo: ApplicantStatusPersistentRepository = applicant_status_persistent_repo
+    test_data = applicant_status_dummy_set[0]
+
+    await repo.init(test_data.applicant_email)
+
+
+@pytest.mark.asyncio
+async def test_applicant_status_persistent_repo_patch(
+    mysql_manage,
+    applicant_status_persistent_repo,
+    save_applicant_dummy_to_db,
+    save_applicant_status_dummy_to_db,
+):
+    repo: ApplicantStatusPersistentRepository = applicant_status_persistent_repo
+
+    await repo.patch(generate_applicant_email(0), {"is_paid": True})
+    await repo.patch(
+        generate_applicant_email(0), {"is_printed_application_arrived": False}
+    )
+    await repo.patch(generate_applicant_email(0), {"exam_code": "029435"})
+
+
+@pytest.mark.asyncio
+async def test_applicant_status_persistent_repo_get(
+    mysql_manage,
+    applicant_status_persistent_repo,
+    save_applicant_dummy_to_db,
+    save_applicant_status_dummy_to_db,
+):
+    repo: ApplicantStatusPersistentRepository = applicant_status_persistent_repo
+
+    for i in range(10):
+        result = await repo.get_one(generate_applicant_email(i))
+        assert result["applicant_email"] == generate_applicant_email(i)
+        assert result["receipt_code"] == i + 1
