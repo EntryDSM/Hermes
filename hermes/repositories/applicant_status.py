@@ -9,7 +9,6 @@ class ApplicantStatusPersistentRepository:
     def __init__(self, connection: Type[DBConnection]):
         self.connection = connection
 
-        self._patch_receipt_code = self._get_patch_function("receipt_code")
         self._patch_is_paid = self._get_patch_function("is_paid")
         self._patch_is_printed_application_arrived = self._get_patch_function(
             "is_printed_application_arrived"
