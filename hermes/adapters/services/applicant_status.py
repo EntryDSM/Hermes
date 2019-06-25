@@ -37,7 +37,7 @@ class ApplicantStatusServiceAdapter(AbstractAdapter):
     async def get_one(self, email: str) -> Dict[str, Any]:
         try:
             status = await self.service.get_one(email)
-        except ApplicantStatusNotFoundException as e:
+        except ApplicantNotFoundException as e:
             raise NotFound(e.args[0])
 
         return self._entity_to_data(self.schema, status)

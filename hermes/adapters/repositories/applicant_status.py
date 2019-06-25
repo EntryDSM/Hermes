@@ -7,7 +7,6 @@ from hermes.adapters.schema import ApplicantStatusSchema
 from hermes.entities.applicant_status import ApplicantStatus
 from hermes.misc.exceptions import (
     ApplicantNotFoundException,
-    ApplicantStatusNotFoundException,
 )
 from hermes.repositories.applicant_status import (
     ApplicantStatusCacheRepository,
@@ -43,7 +42,7 @@ class ApplicantStatusRepositoryAdapter(AbstractAdapter):
         if not data:
             data = await self.persistence_repository.get_one(email)
             if not data:
-                raise ApplicantStatusNotFoundException("Not Found")
+                raise ApplicantNotFoundException("Not Found")
 
         await self.cache_repository.set(data)
         return self._data_to_entity(self.schema, data)
