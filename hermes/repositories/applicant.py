@@ -75,8 +75,9 @@ class ApplicantPersistentRepository:
             applicant_name, 
             sex, 
             birth_date, 
-            parent_name, 
+            parent_name,
             parent_tel, 
+            applicant_tel,
             address, 
             post_code, 
             image_path 
@@ -90,12 +91,13 @@ class ApplicantPersistentRepository:
         query = """
             SELECT 
             email,
-            password
+            password,
             applicant_name, 
             sex, 
             birth_date, 
-            parent_name, 
+            parent_name,
             parent_tel, 
+            applicant_tel,
             address, 
             post_code, 
             image_path 
