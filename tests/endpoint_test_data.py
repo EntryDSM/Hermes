@@ -219,3 +219,41 @@ def applicant_view_test_data():
 
     return test_set
 
+
+def applicant_batch_view_test_data():
+    test_set = [
+        generate_endpoint_test_data(
+            method="GET",
+            endpoint="/api/v1/applicant/batch",
+            query_param={},
+            request_body={},
+            expected_response_status=200,
+            expected_response_body=applicant_batch_response(10),
+        ),
+        generate_endpoint_test_data(
+            method="GET",
+            endpoint="/api/v1/applicant/batch",
+            query_param={"email": generate_applicant_email(0)},
+            request_body={},
+            expected_response_status=200,
+            expected_response_body=applicant_batch_response(1),
+        ),
+        generate_endpoint_test_data(
+            method="GET",
+            endpoint="/api/v1/applicant/batch",
+            query_param={"sex": "FEMALE"},
+            request_body={},
+            expected_response_status=200,
+            expected_response_body=applicant_batch_response(5, sex="FEMALE"),
+        ),
+        generate_endpoint_test_data(
+            method="GET",
+            endpoint="/api/v1/applicant/batch",
+            query_param={"email": generate_applicant_email(14)},
+            request_body={},
+            expected_response_status=200,
+            expected_response_body=applicant_batch_response(0),
+        ),
+    ]
+
+    return test_set
