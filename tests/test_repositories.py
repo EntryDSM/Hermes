@@ -4,7 +4,9 @@ from dataclasses import asdict
 
 import pytest
 
-from tests.helpers import generate_admin_id
+from helpers.admin import generate_admin_id
+from helpers.applicant import generate_applicant_email
+from hermes.repositories.applicant_status import ApplicantStatusPersistentRepository
 
 
 @pytest.mark.asyncio
@@ -49,6 +51,50 @@ async def test_admin_persistent_repo_delete(
     repo = admin_persistent_repo
 
     await repo.delete(generate_admin_id(0))
+
+
+@pytest.mark.asyncio
+async def test_applicant_persistent_repo_save(
+    mysql_manage, applicant_persistent_repo, applicant_dummy_set
+):
+    repo = applicant_persistent_repo
+    test_data = applicant_dummy_set[0]
+
+    await repo.save(test_data.email, test_data.password)
+
+
+@pytest.mark.asyncio
+async def test_applicant_persistent_repo_patch(
+    mysql_manage, applicant_persistent_repo, save_applicant_dummy_to_db
+):
+    repo = applicant_persistent_repo
+    await repo.patch(generate_applicant_email(0), {"password": "p@ssword!"})
+    await repo.patch(generate_applicant_email(0), {"applicant_name": "연중모"})
+    await repo.patch(generate_applicant_email(0), {"applicant_sex": "MALE"})
+    await repo.patch(generate_applicant_email(0), {"post_code": "17002"})
+
+
+@pytest.mark.asyncio
+async def test_applicant_persistent_repo_get(
+    mysql_manage, applicant_persistent_repo, save_applicant_dummy_to_db
+):
+    repo = applicant_persistent_repo
+    result = await repo.get_one(generate_applicant_email(0))
+    assert generate_applicant_email(0) == result["email"]
+
+    result = await repo.get_list()
+    assert isinstance(result, list) and isinstance(result[0], dict)
+
+    result = await repo.get_list({"email": generate_applicant_email(0)})
+    assert generate_applicant_email(0) == result[0]["email"]
+
+
+@pytest.mark.asyncio
+async def test_applicant_persistent_repo_delete(
+    mysql_manage, applicant_persistent_repo, save_applicant_dummy_to_db
+):
+    repo = applicant_persistent_repo
+    await repo.delete(generate_applicant_email(0))
 
 
 @pytest.mark.asyncio
