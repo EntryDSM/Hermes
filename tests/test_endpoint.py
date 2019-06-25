@@ -4,11 +4,17 @@ import json
 
 import pytest
 
-from tests.helpers import save_admins
+from helpers.admin import save_admins
+from helpers.applicant import save_applicants
+from helpers.applicant_status import save_applicant_statuses
 from tests.endpoint_test_data import (
     admin_batch_view_test_data,
-    admin_view_test_data,
     admin_detail_view_test_data,
+    admin_view_test_data,
+    applicant_batch_view_test_data,
+    applicant_detail_view_test_data,
+    applicant_status_view_test_data,
+    applicant_view_test_data,
 )
 
 
@@ -16,7 +22,11 @@ from tests.endpoint_test_data import (
     "method,endpoint,query_param,request_body,expected_response_status,expected_response_body",
     admin_view_test_data()
     + admin_batch_view_test_data()
-    + admin_detail_view_test_data(),
+    + admin_detail_view_test_data()
+    + applicant_view_test_data()
+    + applicant_batch_view_test_data()
+    + applicant_detail_view_test_data()
+    + applicant_status_view_test_data(),
 )
 async def test_endpoint(
     test_cli,
@@ -27,8 +37,12 @@ async def test_endpoint(
     expected_response_status,
     expected_response_body,
     admin_dummy_set,
+    applicant_dummy_set,
+    applicant_status_dummy_set,
 ):
     await save_admins(admin_dummy_set)
+    await save_applicants(applicant_dummy_set)
+    await save_applicant_statuses(applicant_status_dummy_set)
 
     r = await getattr(test_cli, method.lower())(
         uri=endpoint, params=query_param, data=json.dumps(request_body)
