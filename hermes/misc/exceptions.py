@@ -25,7 +25,3 @@ class ApplicantAlreadyExistException(Exception):
 
 class ApplicantNotFoundException(Exception):
     pass
-
-
-class ApplicantStatusNotFoundException(Exception):
-    pass

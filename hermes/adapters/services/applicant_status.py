@@ -8,7 +8,7 @@ from hermes.adapters.repositories.applicant_status import (
 )
 from hermes.adapters.schema import ApplicantStatusSchema, Schema
 from hermes.entities.applicant_status import ApplicantStatus
-from hermes.misc.exceptions import ApplicantStatusNotFoundException
+from hermes.misc.exceptions import ApplicantStatusNotFoundException, ApplicantNotFoundException
 from hermes.services.applicant_status import ApplicantStatusService
 
 
@@ -28,7 +28,7 @@ class ApplicantStatusServiceAdapter(AbstractAdapter):
 
         try:
             await self.service.patch(email, patch_data)
-        except ApplicantStatusNotFoundException as e:
+        except ApplicantNotFoundException as e:
             raise NotFound(e.args[0])
 
         status = await self.service.get_one(email)
