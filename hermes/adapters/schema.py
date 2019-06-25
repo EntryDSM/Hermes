@@ -96,7 +96,9 @@ class ApplicantSchema(Schema):
 class ApplicantPatchSchema(Schema):
     __entity__ = Applicant
 
+    email = String(missing=None)
     password = String(missing=None)
+    applicant_name = String(missing=None, length=13)
     sex = Enum(missing=None, enum=["MALE", "FEMALE"])
     birth_date = Date(missing=None)
     parent_name = String(missing=None, length=13)
@@ -110,10 +112,10 @@ class ApplicantPatchSchema(Schema):
 class ApplicantStatusSchema(Schema):
     __entity__ = ApplicantStatus
 
-    applicant_email = Email(required=True, allow_none=False)
+    applicant_email = Email(missing=None)
     receipt_code = Integer(missing=None)
     is_paid = Boolean(missing=False)
     is_printed_application_arrived = Boolean(missing=False)
     is_passed_first_apply = Boolean(missing=False)
     is_final_submit = Boolean(missing=False)
-    exam_code = String(allow_none=True, length=6)
+    exam_code = String(missing=None, length=6)
