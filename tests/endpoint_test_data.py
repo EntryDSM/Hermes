@@ -1,11 +1,21 @@
-from tests.helpers import (
+import datetime
+
+from helpers.admin import (
     admin_batch_response,
+    admin_detail_response,
     generate_admin_email,
     generate_admin_id,
+)
+from helpers.applicant import (
+    applicant_batch_response,
+    applicant_response,
+    generate_applicant_email,
+)
+from helpers.applicant_status import applicant_status_dunno_response
+from helpers.util import (
     generate_endpoint_test_data,
     generate_random_string,
     status_message_response,
-    admin_detail_response,
 )
 
 
@@ -165,3 +175,47 @@ def admin_detail_view_test_data():
     ]
 
     return test_set
+
+
+def applicant_view_test_data():
+    test_set = [
+        generate_endpoint_test_data(
+            method="POST",
+            endpoint="/api/v1/applicant",
+            query_param={},
+            request_body={
+                "email": generate_applicant_email(11),
+                "password": generate_random_string(),
+            },
+            expected_response_status=201,
+            expected_response_body={
+                **applicant_response(11),
+                "status": applicant_status_dunno_response,
+            },
+        ),
+        generate_endpoint_test_data(
+            method="POST",
+            endpoint="/api/v1/applicant",
+            query_param={},
+            request_body={
+                "email": generate_applicant_email(0),
+                "password": generate_random_string(),
+            },
+            expected_response_status=409,
+            expected_response_body=status_message_response(),
+        ),
+        generate_endpoint_test_data(
+            method="POST",
+            endpoint="/api/v1/applicant",
+            query_param={},
+            request_body={
+                "email": generate_applicant_email(11),
+                "pssword": generate_random_string(),
+            },
+            expected_response_status=400,
+            expected_response_body=status_message_response(),
+        ),
+    ]
+
+    return test_set
+
