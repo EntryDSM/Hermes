@@ -8,7 +8,7 @@ from hermes.adapters.repositories.applicant_status import (
 )
 from hermes.adapters.schema import ApplicantStatusSchema, Schema
 from hermes.entities.applicant_status import ApplicantStatus
-from hermes.misc.exceptions import ApplicantStatusNotFoundException, ApplicantNotFoundException
+from hermes.misc.exceptions import ApplicantNotFoundException
 from hermes.services.applicant_status import ApplicantStatusService
 
 
