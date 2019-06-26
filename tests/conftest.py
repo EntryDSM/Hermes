@@ -6,8 +6,30 @@ from sanic.websocket import WebSocketProtocol
 
 from hermes.presentation.app import create_app
 from hermes.repositories.admin import AdminCacheRepository, AdminPersistentRepository
+from hermes.repositories.applicant import (
+    ApplicantCacheRepository,
+    ApplicantPersistentRepository,
+)
+from hermes.repositories.applicant_status import (
+    ApplicantStatusCacheRepository,
+    ApplicantStatusPersistentRepository,
+)
 from hermes.repositories.connections import MySQLConnection, RedisConnection
-from tests.helpers import create_admin_dummy_object, create_admin_table, save_admins
+from tests.helpers.admin import (
+    create_admin_dummy_object,
+    create_admin_table,
+    save_admins,
+)
+from tests.helpers.applicant import (
+    create_applicant_dummy_object,
+    create_applicant_table,
+    save_applicants,
+)
+from tests.helpers.applicant_status import (
+    create_applicant_status_dummy_object,
+    create_applicant_status_table,
+    save_applicant_statuses,
+)
 
 
 @pytest.fixture(scope="function")
@@ -24,6 +46,8 @@ async def mysql_manage(mysql, mysql_proc):
     }
     await MySQLConnection.initialize(conn_info)
     await create_admin_table(MySQLConnection)
+    await create_applicant_table(MySQLConnection)
+    await create_applicant_status_table(MySQLConnection)
     yield
     await MySQLConnection.destroy()
 
@@ -80,9 +104,35 @@ def admin_dummy_set():
 
 
 @pytest.fixture(scope="function")
+def applicant_dummy_set():
+    applicants = [create_applicant_dummy_object(i) for i in range(10)]
+    return applicants
+
+
+@pytest.fixture(scope="function")
+def applicant_status_dummy_set():
+    statuses = [create_applicant_status_dummy_object(i) for i in range(10)]
+    return statuses
+
+
+@pytest.fixture(scope="function")
 async def save_admin_dummy_to_db(admin_dummy_set):
 
     await save_admins(admin_dummy_set)
+
+
+@pytest.fixture(scope="function")
+async def save_applicant_dummy_to_db(applicant_dummy_set):
+
+    await save_applicants(applicant_dummy_set)
+
+
+@pytest.fixture(scope="function")
+async def save_applicant_status_dummy_to_db(
+    save_applicant_dummy_to_db, applicant_status_dummy_set
+):
+
+    await save_applicant_statuses(applicant_status_dummy_set)
 
 
 @pytest.fixture(scope="function")
@@ -94,6 +144,26 @@ async def save_admin_dummy_to_cache(admin_dummy_set):
 
 
 @pytest.fixture(scope="function")
+async def save_applicant_dummy_to_cache(applicant_dummy_set):
+    for applicant in applicant_dummy_set:
+        applicant = asdict(applicant)
+        applicant["birth_date"] = str(applicant["birth_date"])
+
+        await RedisConnection.set(
+            ApplicantCacheRepository._key_template.format(applicant["email"]), applicant
+        )
+
+
+@pytest.fixture(scope="function")
+async def save_applicant_status_dummy_to_cache(applicant_status_dummy_set):
+    for status in applicant_status_dummy_set:
+        await RedisConnection.set(
+            ApplicantStatusCacheRepository._key_template.format(status.applicant_email),
+            asdict(status),
+        )
+
+
+@pytest.fixture(scope="function")
 async def admin_persistent_repo():
     repo = AdminPersistentRepository(MySQLConnection)
 
@@ -101,7 +171,35 @@ async def admin_persistent_repo():
 
 
 @pytest.fixture(scope="function")
+async def applicant_persistent_repo():
+    repo = ApplicantPersistentRepository(MySQLConnection)
+
+    return repo
+
+
+@pytest.fixture(scope="function")
+async def applicant_status_persistent_repo():
+    repo = ApplicantStatusPersistentRepository(MySQLConnection)
+
+    return repo
+
+
+@pytest.fixture(scope="function")
 async def admin_cache_repo():
     repo = AdminCacheRepository(RedisConnection)
+
+    return repo
+
+
+@pytest.fixture(scope="function")
+async def applicant_cache_repo():
+    repo = ApplicantCacheRepository(RedisConnection)
+
+    return repo
+
+
+@pytest.fixture(scope="function")
+async def applicant_status_cache_repo():
+    repo = ApplicantStatusCacheRepository(RedisConnection)
 
     return repo
