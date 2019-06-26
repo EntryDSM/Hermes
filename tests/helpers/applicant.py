@@ -3,7 +3,7 @@ import random
 import uuid
 from typing import Type
 
-from helpers.util import (
+from tests.helpers.util import (
     DunnoValue,
     generate_random_phone_number,
     generate_random_string,

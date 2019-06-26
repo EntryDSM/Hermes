@@ -1,18 +1,18 @@
 import datetime
 
-from helpers.admin import (
+from tests.helpers.admin import (
     admin_batch_response,
     admin_detail_response,
     generate_admin_email,
     generate_admin_id,
 )
-from helpers.applicant import (
+from tests.helpers.applicant import (
     applicant_batch_response,
     applicant_response,
     generate_applicant_email,
 )
-from helpers.applicant_status import applicant_status_dunno_response
-from helpers.util import (
+from tests.helpers.applicant_status import applicant_status_dunno_response
+from tests.helpers.util import (
     generate_endpoint_test_data,
     generate_random_string,
     status_message_response,

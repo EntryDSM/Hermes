@@ -5,9 +5,7 @@ from marshmallow import Schema
 from hermes.adapters import AbstractAdapter
 from hermes.adapters.schema import ApplicantStatusSchema
 from hermes.entities.applicant_status import ApplicantStatus
-from hermes.misc.exceptions import (
-    ApplicantNotFoundException,
-)
+from hermes.misc.exceptions import ApplicantNotFoundException
 from hermes.repositories.applicant_status import (
     ApplicantStatusCacheRepository,
     ApplicantStatusPersistentRepository,

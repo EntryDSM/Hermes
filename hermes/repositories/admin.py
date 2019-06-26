@@ -25,7 +25,6 @@ class AdminPersistentRepository:
             ) character set utf8mb4;
     """
 
-
     async def save(self, admin: Dict[str, Any]) -> None:
         query = """INSERT INTO admin (
                     admin_id,

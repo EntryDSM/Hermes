@@ -1,9 +1,8 @@
-import datetime
 import random
 from typing import Type
 
-from helpers.applicant import generate_applicant_email
-from helpers.util import DunnoValue
+from tests.helpers.applicant import generate_applicant_email
+from tests.helpers.util import DunnoValue
 from hermes.entities.applicant_status import ApplicantStatus
 from hermes.repositories.applicant_status import ApplicantStatusPersistentRepository
 from hermes.repositories.connections import DBConnection, MySQLConnection

@@ -4,8 +4,8 @@ from dataclasses import asdict
 
 import pytest
 
-from helpers.admin import generate_admin_id
-from helpers.applicant import generate_applicant_email
+from tests.helpers.admin import generate_admin_id
+from tests.helpers.applicant import generate_applicant_email
 from hermes.repositories.applicant_status import ApplicantStatusPersistentRepository
 
 

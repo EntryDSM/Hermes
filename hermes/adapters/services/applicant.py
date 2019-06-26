@@ -11,7 +11,8 @@ from hermes.misc.exceptions import (
     ApplicantAlreadyExistException,
     ApplicantNotFoundException,
     Conflict,
-    BadRequest)
+    BadRequest,
+)
 from hermes.services.applicant import ApplicantService
 
 

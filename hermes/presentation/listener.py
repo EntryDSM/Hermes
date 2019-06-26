@@ -34,7 +34,9 @@ async def migrate(app, loop):
 
     await MySQLConnection.execute(AdminPersistentRepository.table_creation_query)
     await MySQLConnection.execute(ApplicantPersistentRepository.table_creation_query)
-    await MySQLConnection.execute(ApplicantStatusPersistentRepository.table_creation_query)
+    await MySQLConnection.execute(
+        ApplicantStatusPersistentRepository.table_creation_query
+    )
 
     logger.info("Database migration complete")
 

@@ -144,7 +144,9 @@ class ApplicantCacheRepository:
         self.connection = connection
 
     async def set(self, applicant: Dict[str, Any]) -> None:
-        applicant["birth_date"] = str(applicant["birth_date"]) if applicant["birth_date"] else None
+        applicant["birth_date"] = (
+            str(applicant["birth_date"]) if applicant["birth_date"] else None
+        )
 
         await self.connection.set(
             self._key_template.format(applicant["email"]), applicant

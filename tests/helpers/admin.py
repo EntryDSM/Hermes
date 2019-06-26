@@ -3,7 +3,7 @@ from typing import Type
 
 from werkzeug.security import generate_password_hash
 
-from helpers.util import DunnoValue, generate_random_string
+from tests.helpers.util import DunnoValue, generate_random_string
 from hermes.entities.admin import Admin
 from hermes.repositories.connections import DBConnection, MySQLConnection
 

@@ -4,9 +4,9 @@ import json
 
 import pytest
 
-from helpers.admin import save_admins
-from helpers.applicant import save_applicants
-from helpers.applicant_status import save_applicant_statuses
+from tests.helpers.admin import save_admins
+from tests.helpers.applicant import save_applicants
+from tests.helpers.applicant_status import save_applicant_statuses
 from tests.endpoint_test_data import (
     admin_batch_view_test_data,
     admin_detail_view_test_data,

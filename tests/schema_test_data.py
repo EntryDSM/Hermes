@@ -2,7 +2,7 @@
 
 import datetime
 import random
-from typing import Any, Dict, Union, Tuple, List, Type
+from typing import Any, Dict, List, Tuple, Type, Union
 
 from marshmallow import Schema
 
