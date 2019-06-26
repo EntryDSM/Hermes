@@ -320,6 +320,16 @@ def applicant_detail_view_test_data():
             expected_response_status=200,
             expected_response_body=applicant_response(7),
         ),
+        generate_endpoint_test_data(
+            method="PATCH",
+            endpoint=f"/api/v1/applicant/{generate_applicant_email(6)}",
+            query_param={},
+            request_body={
+                "birth_date": "WrongDateTypeLMAO",
+            },
+            expected_response_status=400,
+            expected_response_body=status_message_response(),
+        ),
     ]
 
     return test_set
@@ -365,6 +375,14 @@ def applicant_status_view_test_data():
             query_param={},
             request_body={"is_printed_application_arrived": "true"},
             expected_response_status=404,
+            expected_response_body=status_message_response(),
+        ),
+        generate_endpoint_test_data(
+            method="PATCH",
+            endpoint=f"/api/v1/applicant/{generate_applicant_email(4)}/status",
+            query_param={},
+            request_body={"is_printed_application_arrived": "ThisISNotBooleanType"},
+            expected_response_status=400,
             expected_response_body=status_message_response(),
         ),
     ]
