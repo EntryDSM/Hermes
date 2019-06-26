@@ -1,5 +1,6 @@
 from typing import Any, Dict
 
+from marshmallow import ValidationError
 from sanic.exceptions import NotFound
 
 from hermes.adapters import AbstractAdapter
@@ -8,7 +9,7 @@ from hermes.adapters.repositories.applicant_status import (
 )
 from hermes.adapters.schema import ApplicantStatusSchema, Schema
 from hermes.entities.applicant_status import ApplicantStatus
-from hermes.misc.exceptions import ApplicantNotFoundException
+from hermes.misc.exceptions import ApplicantNotFoundException, BadRequest
 from hermes.services.applicant_status import ApplicantStatusService
 
 
@@ -24,7 +25,10 @@ class ApplicantStatusServiceAdapter(AbstractAdapter):
         return self._entity_to_data(self.schema, status)
 
     async def patch(self, email: str, patch_data: Dict[str, Any]) -> Dict[str, Any]:
-        patch_data = self._data_to_entity(self.schema, patch_data)
+        try:
+            patch_data = self._data_to_entity(self.schema, patch_data)
+        except ValidationError:
+            raise BadRequest("Bad Request")
 
         try:
             await self.service.patch(email, patch_data)

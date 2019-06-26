@@ -26,7 +26,7 @@ class ApplicantServiceAdapter(AbstractAdapter):
     async def create(self, init_applicant_data: Dict[str, Any]) -> Dict[str, Any]:
         try:
             entity = self._data_to_entity(self.schema, init_applicant_data)
-        except ValidationError as e:
+        except ValidationError:
             raise BadRequest("Bad Request")
         try:
             await self.service.create(entity)
@@ -37,8 +37,10 @@ class ApplicantServiceAdapter(AbstractAdapter):
         return self._entity_to_data(self.schema, applicant)
 
     async def patch(self, email: str, patch_data: Dict[str, Any]) -> Dict[str, Any]:
-        entity = self._data_to_entity(self.patch_schema, patch_data)
-
+        try:
+            entity = self._data_to_entity(self.patch_schema, patch_data)
+        except ValidationError:
+            raise BadRequest("Bad Request")
         try:
             await self.service.patch(email, entity)
         except ApplicantNotFoundException as e:
