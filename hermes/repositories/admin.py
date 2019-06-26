@@ -11,6 +11,20 @@ class AdminPersistentRepository:
     def __init__(self, connection: Type[DBConnection]):
         self.connection = connection
 
+    table_creation_query = """
+            create table if not exists admin
+            (
+              admin_id       varchar(45)                                  not null
+                primary key,
+              admin_password varchar(100)                                 not null,
+              admin_type     enum ('ROOT', 'ADMINISTRATION', 'INTERVIEW') not null,
+              admin_email    varchar(320)                                 not null,
+              admin_name     varchar(13)                                  not null,
+              created_at     timestamp default CURRENT_TIMESTAMP          not null,
+              updated_at     timestamp default CURRENT_TIMESTAMP          not null
+            ) character set utf8mb4;
+    """
+
     async def save(self, admin: Dict[str, Any]) -> None:
         query = """INSERT INTO admin (
                     admin_id,

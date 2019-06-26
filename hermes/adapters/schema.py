@@ -1,14 +1,23 @@
 import re
 from typing import Any, List
+from datetime import date
 
 from marshmallow import EXCLUDE
 from marshmallow import Schema as BaseSchema
 from marshmallow import post_load
-from marshmallow.fields import Boolean, Date, Email, Integer
+from marshmallow.fields import Boolean, Email, Integer, Date as BaseDate
 from marshmallow.fields import String as BaseString
 
 from hermes.entities.admin import Admin
-from hermes.entities.applicant import Applicant, ApplicantStatus
+from hermes.entities.applicant import Applicant
+from hermes.entities.applicant_status import ApplicantStatus
+
+
+class Date(BaseDate):
+    def _deserialize(self, value, attr, data, **kwargs):
+        if isinstance(value, date):
+            return value
+        return super()._deserialize(value, attr, data)
 
 
 class String(BaseString):
@@ -59,9 +68,12 @@ class AdminPatchSchema(Schema):
     admin_id = String(required=False, allow_none=False, missing=None, length=45)
     admin_password = String(required=False, allow_none=False, missing=None, length=93)
     admin_type = Enum(
-        required=False, allow_none=False, missing=None, enum=["ROOT", "ADMINISTRATION", "INTERVIEW"]
+        required=False,
+        allow_none=False,
+        missing=None,
+        enum=["ROOT", "ADMINISTRATION", "INTERVIEW"],
     )
-    admin_email = Email(required=False, allow_none=False, missing=None,)
+    admin_email = Email(required=False, allow_none=False, missing=None)
     admin_name = String(required=False, allow_none=False, missing=None, length=13)
 
 
@@ -70,6 +82,22 @@ class ApplicantSchema(Schema):
 
     email = Email(required=True, allow_none=False)
     password = String(required=True, allow_none=False, length=93)
+    applicant_name = String(missing=None, length=13)
+    sex = Enum(missing=None, enum=["MALE", "FEMALE"])
+    birth_date = Date(missing=None)
+    parent_name = String(missing=None, length=13)
+    parent_tel = String(missing=None, regex=r"01\d\d{3,4}\d{4}")
+    applicant_tel = String(missing=None, regex=r"01\d\d{3,4}\d{4}")
+    address = String(missing=None, length=500)
+    post_code = String(missing=None, length=5)
+    image_path = String(missing=None, length=256)
+
+
+class ApplicantPatchSchema(Schema):
+    __entity__ = Applicant
+
+    email = String(missing=None)
+    password = String(missing=None)
     applicant_name = String(missing=None, length=13)
     sex = Enum(missing=None, enum=["MALE", "FEMALE"])
     birth_date = Date(missing=None)
@@ -84,10 +112,10 @@ class ApplicantSchema(Schema):
 class ApplicantStatusSchema(Schema):
     __entity__ = ApplicantStatus
 
-    applicant_email = Email(required=True, allow_none=False)
+    applicant_email = Email(missing=None)
     receipt_code = Integer(missing=None)
     is_paid = Boolean(missing=False)
     is_printed_application_arrived = Boolean(missing=False)
     is_passed_first_apply = Boolean(missing=False)
     is_final_submit = Boolean(missing=False)
-    exam_code = String(length=6)
+    exam_code = String(missing=None, length=6)

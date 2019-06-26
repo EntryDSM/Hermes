@@ -17,3 +17,11 @@ class AdminAlreadyExistException(Exception):
 
 class AdminNotFoundException(Exception):
     pass
+
+
+class ApplicantAlreadyExistException(Exception):
+    pass
+
+
+class ApplicantNotFoundException(Exception):
+    pass

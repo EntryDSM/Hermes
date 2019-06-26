@@ -7,12 +7,7 @@ from hermes.misc.exceptions import SanicException
 
 async def base_handler(request: Request, exception: SanicException):
     # pylint: disable=unused-argument
-    return json(
-        body={
-            "msg": exception.args[0]
-        },
-        status=exception.status_code
-    )
+    return json(body={"msg": exception.args[0]}, status=exception.status_code)
 
 
 def add_error_handlers(app: Sanic):

@@ -2,6 +2,9 @@ from sanic.log import logger
 
 from hermes.misc.config import settings
 from hermes.repositories.connections import MySQLConnection, RedisConnection
+from hermes.repositories.admin import AdminPersistentRepository
+from hermes.repositories.applicant import ApplicantPersistentRepository
+from hermes.repositories.applicant_status import ApplicantStatusPersistentRepository
 
 
 async def initialize(app, loop):
@@ -25,21 +28,15 @@ async def initialize(app, loop):
 
 async def migrate(app, loop):
     if not MySQLConnection.is_available:
-        raise Exception("Database connection is unavailable, Make sure initialize connection!")
+        raise Exception(
+            "Database connection is unavailable, Make sure you initialize connection!"
+        )
 
-    await MySQLConnection.execute("""
-            create table if not exists admin
-            (
-              admin_id       varchar(45)                                  not null
-                primary key,
-              admin_password varchar(100)                                 not null,
-              admin_type     enum ('ROOT', 'ADMINISTRATION', 'INTERVIEW') not null,
-              admin_email    varchar(320)                                 not null,
-              admin_name     varchar(13)                                  not null,
-              created_at     timestamp default CURRENT_TIMESTAMP          not null,
-              updated_at     timestamp default CURRENT_TIMESTAMP          not null
-            ) character set utf8mb4;
-    """)
+    await MySQLConnection.execute(AdminPersistentRepository.table_creation_query)
+    await MySQLConnection.execute(ApplicantPersistentRepository.table_creation_query)
+    await MySQLConnection.execute(
+        ApplicantStatusPersistentRepository.table_creation_query
+    )
 
     logger.info("Database migration complete")
 
