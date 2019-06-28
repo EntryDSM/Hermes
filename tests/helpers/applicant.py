@@ -3,6 +3,8 @@ import random
 import uuid
 from typing import Type
 
+from werkzeug.security import generate_password_hash
+
 from tests.helpers.util import (
     DunnoValue,
     generate_random_phone_number,
@@ -28,7 +30,7 @@ async def create_applicant_table(db_connection: Type[DBConnection]):
 def create_applicant_dummy_object(applicant_index: int):
     return Applicant(
         email=generate_applicant_email(applicant_index),
-        password=generate_random_string(),
+        password=f"pw:{generate_applicant_id(applicant_index)}",
         applicant_name=generate_random_string(),
         sex="FEMALE" if applicant_index % 2 else "MALE",
         birth_date=datetime.datetime.now().date(),
@@ -64,7 +66,7 @@ async def save_applicants(applicant_dummy_set):
         await MySQLConnection.execute(
             query,
             applicant.email,
-            applicant.password,
+            generate_password_hash(applicant.password),
             applicant.applicant_name,
             applicant.sex,
             applicant.birth_date,

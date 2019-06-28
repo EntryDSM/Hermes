@@ -3,9 +3,11 @@ from typing import Dict, List, Union
 from sanic.request import Request
 from sanic.response import json
 from sanic.views import HTTPMethodView
+from werkzeug.security import check_password_hash
 
 from hermes.adapters.repositories.admin import AdminRepositoryAdapter
 from hermes.adapters.services.admin import AdminServiceAdapter
+from hermes.misc.exceptions import BadRequest, Forbidden
 from hermes.repositories.connections import MySQLConnection, RedisConnection
 from hermes.repositories.external_service import GatewayConnection
 
@@ -70,3 +72,19 @@ class AdminDetailView(HTTPMethodView):
         await self.service.delete(admin_id)
 
         return json({"msg": "Successfully deleted"}, 200)
+
+
+class AdminAuthorizationView(HTTPMethodView):
+    repository = AdminRepositoryAdapter(MySQLConnection, RedisConnection, GatewayConnection)
+    service = AdminServiceAdapter(repository)
+
+    async def post(self, request: Request, admin_id: str):
+        password = request.json.get("password")
+        if not password:
+            raise BadRequest("Bad Request")
+
+        admin = await self.service.get_one(admin_id)
+        if not check_password_hash(admin["admin_password"], password):
+            raise Forbidden("Authorization failed")
+
+        return json({"msg": "Authorization succeed"}, 200)

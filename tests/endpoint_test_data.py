@@ -10,7 +10,7 @@ from tests.helpers.applicant import (
     applicant_batch_response,
     applicant_response,
     generate_applicant_email,
-)
+    generate_applicant_id)
 from tests.helpers.applicant_status import applicant_status_dunno_response
 from tests.helpers.util import (
     generate_endpoint_test_data,
@@ -177,6 +177,41 @@ def admin_detail_view_test_data():
     return test_set
 
 
+def admin_authorization_view_test_data():
+    test_set = [
+        generate_endpoint_test_data(
+            method="POST",
+            endpoint=f"/api/v1/admin/{generate_admin_id(0)}/authorization",
+            query_param={},
+            request_body={
+                "password": f"pw:{generate_admin_id(0)}",
+            },
+            expected_response_status=200,
+            expected_response_body=status_message_response(),
+        ),
+        generate_endpoint_test_data(
+            method="POST",
+            endpoint=f"/api/v1/admin/{generate_admin_id(0)}/authorization",
+            query_param={},
+            request_body={
+                "password": f"WrongPassWord",
+            },
+            expected_response_status=403,
+            expected_response_body=status_message_response(),
+        ),
+        generate_endpoint_test_data(
+            method="POST",
+            endpoint=f"/api/v1/admin/{generate_admin_id(0)}/authorization",
+            query_param={},
+            request_body={},
+            expected_response_status=400,
+            expected_response_body=status_message_response(),
+        ),
+    ]
+
+    return test_set
+
+
 def applicant_view_test_data():
     test_set = [
         generate_endpoint_test_data(
@@ -327,6 +362,41 @@ def applicant_detail_view_test_data():
             request_body={
                 "birth_date": "WrongDateTypeLMAO",
             },
+            expected_response_status=400,
+            expected_response_body=status_message_response(),
+        ),
+    ]
+
+    return test_set
+
+
+def applicant_authorization_view_test_data():
+    test_set = [
+        generate_endpoint_test_data(
+            method="POST",
+            endpoint=f"/api/v1/applicant/{generate_applicant_email(0)}/authorization",
+            query_param={},
+            request_body={
+                "password": f"pw:{generate_applicant_id(0)}",
+            },
+            expected_response_status=200,
+            expected_response_body=status_message_response(),
+        ),
+        generate_endpoint_test_data(
+            method="POST",
+            endpoint=f"/api/v1/applicant/{generate_applicant_email(0)}/authorization",
+            query_param={},
+            request_body={
+                "password": f"WrongPassWord",
+            },
+            expected_response_status=403,
+            expected_response_body=status_message_response(),
+        ),
+        generate_endpoint_test_data(
+            method="POST",
+            endpoint=f"/api/v1/applicant/{generate_applicant_email(0)}/authorization",
+            query_param={},
+            request_body={},
             expected_response_status=400,
             expected_response_body=status_message_response(),
         ),
