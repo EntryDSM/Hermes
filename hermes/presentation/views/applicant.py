@@ -3,6 +3,7 @@ from typing import Dict, List, Union
 from sanic.request import Request
 from sanic.response import json
 from sanic.views import HTTPMethodView
+from werkzeug.security import check_password_hash
 
 from hermes.adapters.repositories.applicant import ApplicantRepositoryAdapter
 from hermes.adapters.repositories.applicant_status import (
@@ -89,7 +90,7 @@ class ApplicantAuthorizationView(HTTPMethodView):
             raise BadRequest("Bad Request")
 
         applicant = await self.service.get_one(email)
-        if applicant["password"] != password:
+        if not check_password_hash(applicant["password"], password):
             raise Forbidden("Authorization failed")
 
         return json({"msg": "Authorization succeed"}, 200)
