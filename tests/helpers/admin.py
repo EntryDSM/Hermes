@@ -38,7 +38,7 @@ async def create_admin_table(
 def create_admin_dummy_object(admin_index: int, privileges: str = "ADMINISTRATION"):
     return Admin(
         admin_email=generate_admin_email(admin_index),
-        admin_password=generate_random_string(),
+        admin_password=f"pw:{generate_admin_id(admin_index)}",
         admin_type=privileges,
         admin_id=generate_admin_id(admin_index),
         admin_name=generate_random_string(),
