@@ -15,6 +15,7 @@ from tests.endpoint_test_data import (
     applicant_detail_view_test_data,
     applicant_status_view_test_data,
     applicant_view_test_data,
+    applicant_authorization_view_test_data,
 )
 
 
@@ -26,6 +27,7 @@ from tests.endpoint_test_data import (
     + applicant_view_test_data()
     + applicant_batch_view_test_data()
     + applicant_detail_view_test_data()
+    + applicant_authorization_view_test_data()
     + applicant_status_view_test_data(),
 )
 async def test_endpoint(

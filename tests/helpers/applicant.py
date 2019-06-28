@@ -28,7 +28,7 @@ async def create_applicant_table(db_connection: Type[DBConnection]):
 def create_applicant_dummy_object(applicant_index: int):
     return Applicant(
         email=generate_applicant_email(applicant_index),
-        password=generate_random_string(),
+        password=f"pw:{generate_applicant_id(applicant_index)}",
         applicant_name=generate_random_string(),
         sex="FEMALE" if applicant_index % 2 else "MALE",
         birth_date=datetime.datetime.now().date(),
