@@ -10,6 +10,7 @@ from hermes.adapters.repositories.applicant_status import (
 )
 from hermes.adapters.services.applicant import ApplicantServiceAdapter
 from hermes.adapters.services.applicant_status import ApplicantStatusServiceAdapter
+from hermes.misc.exceptions import BadRequest, Forbidden
 from hermes.repositories.connections import MySQLConnection, RedisConnection
 
 
@@ -76,3 +77,19 @@ class ApplicantDetailView(HTTPMethodView):
         await self.service.delete(email)
 
         return json({"msg": "Successfully deleted"}, 200)
+
+
+class ApplicantAuthorizationView(HTTPMethodView):
+    repository = ApplicantRepositoryAdapter(MySQLConnection, RedisConnection)
+    service = ApplicantServiceAdapter(repository)
+
+    async def post(self, request: Request, email: str):
+        password = request.json.get("password")
+        if not password:
+            raise BadRequest("Bad Request")
+
+        applicant = await self.service.get_one(email)
+        if applicant["password"] != password:
+            raise Forbidden("Authorization failed")
+
+        return json({"msg": "Authorization succeed"}, 200)
