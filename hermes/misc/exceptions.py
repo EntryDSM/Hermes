@@ -11,6 +11,11 @@ class BadRequest(SanicException):
     pass
 
 
+@add_status_code(403)
+class Forbidden(SanicException):
+    pass
+
+
 class AdminAlreadyExistException(Exception):
     pass
 
