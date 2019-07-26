@@ -1,9 +1,14 @@
 import json
+from sanic.log import logger
 from abc import ABC, abstractmethod
+from functools import wraps
 from typing import Any, Dict, List
 
 import aiomysql
 import aioredis
+from pymysql import OperationalError
+
+from hermes.misc.config import settings
 
 
 class DBConnection(ABC):
@@ -38,12 +43,34 @@ class DBConnection(ABC):
         ...
 
 
+def reconnect_mysql(fn):
+    @wraps(fn)
+    async def wrapper(*args, **kwargs):
+        try:
+            return await fn(*args, **kwargs)
+        except OperationalError as e:
+            if e.args[0] == 2003:  # check connection is expired
+                logger.warn("MySQL credential expired. trying to get new credentials from vault")
+
+                MySQLConnection._read_pool = None
+                MySQLConnection._write_pool = None
+
+                settings.vault_client._database_credential = None
+                MySQLConnection._connection_info = settings.database_connection_info
+
+                return await fn(*args, **kwargs)
+            else:
+                raise e
+
+    return wrapper
+
+
 class MySQLConnection(DBConnection):
-    __read_pool: aiomysql.Pool = None
-    __write_pool: aiomysql.Pool = None
+    _read_pool: aiomysql.Pool = None
+    _write_pool: aiomysql.Pool = None
     _connection_info = None
 
-    is_available = not (__read_pool and __write_pool)
+    is_available = not (_read_pool and _write_pool)
 
     @classmethod
     async def initialize(cls, connection_info):
@@ -54,39 +81,38 @@ class MySQLConnection(DBConnection):
 
     @classmethod
     async def destroy(cls):
-        if cls.__read_pool is not None:
-            cls.__read_pool.close()
-            await cls.__read_pool.wait_closed()
-        if cls.__write_pool is not None:
-            cls.__write_pool.close()
-            await cls.__write_pool.wait_closed()
+        if cls._read_pool is not None:
+            cls._read_pool.close()
+            await cls._read_pool.wait_closed()
+        if cls._write_pool is not None:
+            cls._write_pool.close()
+            await cls._write_pool.wait_closed()
 
-        cls.__read_pool = None
-        cls.__write_pool = None
+        cls._read_pool = None
+        cls._write_pool = None
 
     @classmethod
     async def _get_read_pool(cls) -> aiomysql.Pool:
         if (
-            cls.__read_pool and not cls.__read_pool._closed
+            cls._read_pool and not cls._read_pool._closed
         ):  # pylint: disable=protected-access
-            return cls.__read_pool
+            return cls._read_pool
 
-        cls.__read_pool = await aiomysql.create_pool(**cls._connection_info)
-
-        return cls.__read_pool
+        cls._read_pool = await aiomysql.create_pool(**cls._connection_info)
+        return cls._read_pool
 
     @classmethod
     async def _get_write_pool(cls) -> aiomysql.Pool:
         if (
-            cls.__write_pool and not cls.__write_pool._closed
+            cls._write_pool and not cls._write_pool._closed
         ):  # pylint: disable=protected-access
-            return cls.__write_pool
+            return cls._write_pool
 
-        cls.__write_pool = await aiomysql.create_pool(**cls._connection_info)
-
-        return cls.__write_pool
+        cls._write_pool = await aiomysql.create_pool(**cls._connection_info)
+        return cls._write_pool
 
     @classmethod
+    @reconnect_mysql
     async def execute(cls, query: str, *args) -> int:
         pool: aiomysql.Pool = await cls._get_write_pool()
         conn: aiomysql.Connection
@@ -100,6 +126,7 @@ class MySQLConnection(DBConnection):
         return result
 
     @classmethod
+    @reconnect_mysql
     async def executemany(cls, query: str, *args) -> int:
         pool: aiomysql.Pool = await cls._get_write_pool()
         conn: aiomysql.Connection
@@ -113,6 +140,7 @@ class MySQLConnection(DBConnection):
         return result
 
     @classmethod
+    @reconnect_mysql
     async def fetch(cls, query: str, *args) -> List[Dict[str, Any]]:
         pool: aiomysql.Pool = await cls._get_read_pool()
         conn: aiomysql.Connection
@@ -127,6 +155,7 @@ class MySQLConnection(DBConnection):
         return result
 
     @classmethod
+    @reconnect_mysql
     async def fetchone(cls, query: str, *args) -> Dict[str, Any]:
         pool: aiomysql.Pool = await cls._get_read_pool()
         conn: aiomysql.Connection
