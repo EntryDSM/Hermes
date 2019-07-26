@@ -1,6 +1,7 @@
 from typing import Dict
 
 import hvac
+from sanic.log import logger
 
 from hermes.misc.constants import (
     GITHUB_TOKEN,
@@ -36,6 +37,7 @@ class VaultClient:
     def database_credential(self) -> Dict[str, str]:
         try:
             if not self._database_credential:
+                logger.warn("A new database credential acquired")
                 data = self.client.read(f"database/creds/{SERVICE_NAME}-{RUN_ENV}")[
                     "data"
                 ]
